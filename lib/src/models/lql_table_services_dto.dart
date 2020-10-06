@@ -1,4 +1,5 @@
 import 'package:built_value/built_value.dart';
+import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 
 part 'lql_table_services_dto.g.dart';
@@ -26,6 +27,9 @@ abstract class LqlTableServicesDto
   @BuiltValueField(wireName: "plugin_output")
   @nullable
   String get pluginOutput;
+
+  @nullable
+  BuiltList<num> get comments;
 
   factory LqlTableServicesDto(
       [void Function(LqlTableServicesDtoBuilder) updates]) = _$LqlTableServicesDto;

@@ -52,6 +52,20 @@ class Client {
     return BuiltList(result);
   }
 
+  Future<BuiltList<LqlTableCommentsDto>> lqlGetTableComments(
+      {List<String> columns, List<String> filter, num limit}) async {
+
+    var response = await requestLqlTable('comments',
+        columns: columns, filter: filter, limit: limit);
+
+    List<LqlTableCommentsDto> result = [];
+    response.data.forEach((item) {
+      result.add(
+          serializers.deserializeWith(LqlTableCommentsDto.serializer, item));
+    });
+    return BuiltList(result);
+  }
+
   Future<BuiltList<LqlTableServicesDto>> lqlGetTableServices(
       {List<String> columns, List<String> filter, num limit}) async {
 

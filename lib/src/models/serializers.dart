@@ -9,6 +9,7 @@ part 'serializers.g.dart';
   LqlStatsTacticalOverviewDto,
   LqlTableHostsDto,
   LqlTableServicesDto,
+  LqlTableCommentsDto,
 ])
 final Serializers serializers = (_$serializers.toBuilder()
   ..addPlugin(StandardJsonPlugin()))
