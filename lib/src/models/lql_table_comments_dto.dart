@@ -23,7 +23,7 @@ abstract class LqlTableCommentsDto
 
   @BuiltValueField(wireName: "entry_time")
   @nullable
-  num get entryTime;
+  DateTime get entryTime;
 
   @BuiltValueField(wireName: "entry_type")
   @nullable
