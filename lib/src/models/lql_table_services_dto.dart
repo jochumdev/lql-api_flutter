@@ -31,6 +31,10 @@ abstract class LqlTableServicesDto
   @nullable
   BuiltList<num> get comments;
 
+  @BuiltValueField(wireName: "last_state_change")
+  @nullable
+  DateTime get lastStateChange;
+
   factory LqlTableServicesDto(
       [void Function(LqlTableServicesDtoBuilder) updates]) = _$LqlTableServicesDto;
 
