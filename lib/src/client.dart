@@ -3,10 +3,20 @@ import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'dart:io' if (kIsWeb) 'dart:html';
 import 'package:built_collection/built_collection.dart';
 import 'package:dio/dio.dart';
-import 'package:dio/adapter.dart';
 import './client_settings.dart';
 import './error/check_mk_base_error.dart';
 import './models/models.dart';
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          ((X509Certificate cert, String host, int port) {
+        return true;
+      });
+  }
+}
 
 class Client {
   final ClientSettings settings;
@@ -24,13 +34,7 @@ class Client {
     }
 
     if (!settings.validateSsl && !kIsWeb) {
-      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-          (client) {
-        //file is the path of certificate
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true;
-        return client;
-      };
+      HttpOverrides.global = new MyHttpOverrides();
     }
   }
 
@@ -40,7 +44,6 @@ class Client {
 
   Future<BuiltList<LqlTableHostsDto>> lqlGetTableHosts(
       {List<String> columns, List<String> filter, num limit}) async {
-
     var response = await requestLqlTable('hosts',
         columns: columns, filter: filter, limit: limit);
 
@@ -54,7 +57,6 @@ class Client {
 
   Future<BuiltList<LqlTableCommentsDto>> lqlGetTableComments(
       {List<String> columns, List<String> filter, num limit}) async {
-
     var response = await requestLqlTable('comments',
         columns: columns, filter: filter, limit: limit);
 
@@ -68,7 +70,6 @@ class Client {
 
   Future<BuiltList<LqlTableServicesDto>> lqlGetTableServices(
       {List<String> columns, List<String> filter, num limit}) async {
-
     var response = await requestLqlTable('services',
         columns: columns, filter: filter, limit: limit);
 
@@ -135,10 +136,8 @@ class Client {
         if (e.response != null) {
           print(e.response.data);
           print(e.response.headers);
-          print(e.response.request);
         } else {
           // Something happened in setting up or sending the request that triggered an Error
-          print(e.request);
           print(e.message);
         }
       }
@@ -166,7 +165,7 @@ class Client {
 
     try {
       return await dio.request(uri.toString(),
-          options: RequestOptions(method: method), data: data);
+          options: Options(method: method), data: data);
     } on DioError catch (e) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.

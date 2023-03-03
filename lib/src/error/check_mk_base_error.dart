@@ -4,14 +4,13 @@ class CheckMkBaseError implements Exception {
   CheckMkBaseError({
     this.request,
     this.response,
-    this.type = DioErrorType.DEFAULT,
+    this.type = DioErrorType.unknown,
     this.error,
   });
 
   static CheckMkBaseError of<T>(T error) {
     if (error is DioError) {
       return new CheckMkBaseError(
-        request: error.request,
         response: error.response,
         type: error.type,
         error: error.error,
