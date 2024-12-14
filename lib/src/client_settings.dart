@@ -9,14 +9,20 @@ class ClientSettings {
   final String secret;
 
   ClientSettings(
-      {this.baseUrl,
-      this.site,
-      this.username,
-      this.secret,
+      {required this.baseUrl,
+      required this.site,
+      required this.username,
+      required this.secret,
       this.validateSsl = false});
 
   String toJson() {
-    var data = {"baseUrl": baseUrl, "site": site, "username": username, "secret": secret, "validateSsl": validateSsl};
+    var data = {
+      "baseUrl": baseUrl,
+      "site": site,
+      "username": username,
+      "secret": secret,
+      "validateSsl": validateSsl
+    };
     return jsonEncode(data);
   }
 

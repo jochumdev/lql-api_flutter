@@ -13,6 +13,6 @@ part 'serializers.g.dart';
   LqlTableCommentsDto,
 ])
 final Serializers serializers = (_$serializers.toBuilder()
-  ..addPlugin(StandardJsonPlugin())
-  ..add(DateTimeFromEpoch()))
+      ..addPlugin(StandardJsonPlugin())
+      ..add(DateTimeFromEpoch()))
     .build();

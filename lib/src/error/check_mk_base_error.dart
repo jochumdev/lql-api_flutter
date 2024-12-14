@@ -4,31 +4,33 @@ class CheckMkBaseError implements Exception {
   CheckMkBaseError({
     this.request,
     this.response,
-    this.type = DioErrorType.unknown,
-    this.error,
+    this.type = DioExceptionType.unknown,
+    required this.error,
   });
 
   static CheckMkBaseError of<T>(T error) {
-    if (error is DioError) {
+    if (error is DioException) {
       return new CheckMkBaseError(
         response: error.response,
         type: error.type,
         error: error.error,
       );
+    } else {
+      return new CheckMkBaseError(error: error);
     }
   }
 
   /// Request info.
-  RequestOptions request;
+  RequestOptions? request;
 
   /// Response info, it may be `null` if the request can't reach to
   /// the http server, for example, occurring a dns error, network is not available.
-  Response response;
+  Response? response;
 
-  DioErrorType type;
+  DioExceptionType type;
 
   /// The original error/exception object; It's usually not null when `type`
-  /// is DioErrorType.DEFAULT
+  /// is DioExceptionType.DEFAULT
   dynamic error;
 
   String get message => (error?.toString() ?? '');

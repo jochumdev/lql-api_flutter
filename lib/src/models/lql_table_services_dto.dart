@@ -6,37 +6,30 @@ part 'lql_table_services_dto.g.dart';
 
 abstract class LqlTableServicesDto
     implements Built<LqlTableServicesDto, LqlTableServicesDtoBuilder> {
-
   static Serializer<LqlTableServicesDto> get serializer =>
       _$lqlTableServicesDtoSerializer;
 
-  @nullable
-  num get state;
+  num? get state;
 
   @BuiltValueField(wireName: "host_name")
-  @nullable
   String get hostName;
 
   @BuiltValueField(wireName: "display_name")
-  @nullable
-  String get displayName;
+  String? get displayName;
 
-  @nullable
-  String get description;
+  String? get description;
 
   @BuiltValueField(wireName: "plugin_output")
-  @nullable
-  String get pluginOutput;
+  String? get pluginOutput;
 
-  @nullable
-  BuiltList<num> get comments;
+  BuiltList<num>? get comments;
 
   @BuiltValueField(wireName: "last_state_change")
-  @nullable
-  DateTime get lastStateChange;
+  DateTime? get lastStateChange;
 
   factory LqlTableServicesDto(
-      [void Function(LqlTableServicesDtoBuilder) updates]) = _$LqlTableServicesDto;
+          [void Function(LqlTableServicesDtoBuilder) updates]) =
+      _$LqlTableServicesDto;
 
   LqlTableServicesDto._();
 }

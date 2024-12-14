@@ -3,7 +3,7 @@ description: A new Flutter package project.
 version: 0.0.1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ^3.5.0
 
 dependencies:
   flutter:
@@ -23,7 +23,7 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
-flutter:
+flutter: {}
 
   # To add assets to your package, add an assets section, like this:
   # assets:

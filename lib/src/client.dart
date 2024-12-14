@@ -9,7 +9,7 @@ import './models/models.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
-  HttpClient createHttpClient(SecurityContext context) {
+  HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
       ..badCertificateCallback =
           ((X509Certificate cert, String host, int port) {
@@ -22,12 +22,11 @@ class Client {
   final ClientSettings settings;
   final bool debug;
 
-  Dio dio;
+  Dio dio = Dio();
 
   Client(this.settings, {this.debug = false}) {
-    dio = Dio()
-      ..options.baseUrl = settings.baseUrl
-      ..options.contentType = Headers.formUrlEncodedContentType;
+    dio.options.baseUrl = settings.baseUrl;
+    dio.options.contentType = Headers.formUrlEncodedContentType;
 
     if (debug && kDebugMode) {
       dio.interceptors.add(LogInterceptor());
@@ -43,40 +42,40 @@ class Client {
   }
 
   Future<BuiltList<LqlTableHostsDto>> lqlGetTableHosts(
-      {List<String> columns, List<String> filter, num limit}) async {
+      {List<String>? columns, List<String>? filter, num? limit}) async {
     var response = await requestLqlTable('hosts',
         columns: columns, filter: filter, limit: limit);
 
     List<LqlTableHostsDto> result = [];
     response.data.forEach((item) {
       result
-          .add(serializers.deserializeWith(LqlTableHostsDto.serializer, item));
+          .add(serializers.deserializeWith(LqlTableHostsDto.serializer, item)!);
     });
     return BuiltList(result);
   }
 
   Future<BuiltList<LqlTableCommentsDto>> lqlGetTableComments(
-      {List<String> columns, List<String> filter, num limit}) async {
+      {List<String>? columns, List<String>? filter, num? limit}) async {
     var response = await requestLqlTable('comments',
         columns: columns, filter: filter, limit: limit);
 
     List<LqlTableCommentsDto> result = [];
     response.data.forEach((item) {
       result.add(
-          serializers.deserializeWith(LqlTableCommentsDto.serializer, item));
+          serializers.deserializeWith(LqlTableCommentsDto.serializer, item)!);
     });
     return BuiltList(result);
   }
 
   Future<BuiltList<LqlTableServicesDto>> lqlGetTableServices(
-      {List<String> columns, List<String> filter, num limit}) async {
+      {List<String>? columns, List<String>? filter, num? limit}) async {
     var response = await requestLqlTable('services',
         columns: columns, filter: filter, limit: limit);
 
     List<LqlTableServicesDto> result = [];
     response.data.forEach((item) {
       result.add(
-          serializers.deserializeWith(LqlTableServicesDto.serializer, item));
+          serializers.deserializeWith(LqlTableServicesDto.serializer, item)!);
     });
     return BuiltList(result);
   }
@@ -84,17 +83,17 @@ class Client {
   Future<LqlStatsTacticalOverviewDto> lqlGetStatsTacticalOverview() async {
     var response = await requestLql('stats/tactical_overview');
     return serializers.deserializeWith(
-        LqlStatsTacticalOverviewDto.serializer, response.data);
+        LqlStatsTacticalOverviewDto.serializer, response.data)!;
   }
 
   Future<Response> requestLqlTable(String table,
-      {List<String> columns, List<String> filter, num limit}) async {
+      {List<String>? columns, List<String>? filter, num? limit}) async {
     Map<String, dynamic /*String|Iterable<String>*/ > queryParams = {};
 
-    if (columns != null && columns.length > 0) {
+    if (columns != null) {
       queryParams["column"] = columns;
     }
-    if (filter != null && filter.length > 0) {
+    if (filter != null) {
       queryParams["filter"] = filter;
     }
     if (limit != null) {
@@ -110,7 +109,7 @@ class Client {
 
   Future<Response> requestLql(String url,
       {String method = 'GET',
-      Map<String, dynamic /*String|Iterable<String>*/ > queryParams,
+      Map<String, dynamic /*String|Iterable<String>*/ >? queryParams,
       dynamic data}) async {
     Uri uri;
     uri = Uri(
@@ -129,13 +128,13 @@ class Client {
           options: Options(
               method: method,
               headers: <String, String>{'authorization': auth}));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       if (kDebugMode) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx and is also not 304.
         if (e.response != null) {
-          print(e.response.data);
-          print(e.response.headers);
+          print(e.response!.data);
+          print(e.response!.headers);
         } else {
           // Something happened in setting up or sending the request that triggered an Error
           print(e.message);
@@ -143,7 +142,7 @@ class Client {
       }
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
-      throw CheckMkBaseError.of<DioError>(e);
+      throw CheckMkBaseError.of<DioException>(e);
     }
   }
 
@@ -166,10 +165,10 @@ class Client {
     try {
       return await dio.request(uri.toString(),
           options: Options(method: method), data: data);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
-      throw CheckMkBaseError.of<DioError>(e);
+      throw CheckMkBaseError.of<DioException>(e);
     }
   }
 

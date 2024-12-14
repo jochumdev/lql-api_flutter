@@ -5,32 +5,26 @@ part 'lql_table_comments_dto.g.dart';
 
 abstract class LqlTableCommentsDto
     implements Built<LqlTableCommentsDto, LqlTableCommentsDtoBuilder> {
-
   static Serializer<LqlTableCommentsDto> get serializer =>
       _$lqlTableCommentsDtoSerializer;
 
-  @nullable
-  num get id;
+  num? get id;
 
-  @nullable
-  String get author;
+  String? get author;
 
-  @nullable
-  String get comment;
+  String? get comment;
 
-  @nullable
-  String get description;
+  String? get description;
 
   @BuiltValueField(wireName: "entry_time")
-  @nullable
-  DateTime get entryTime;
+  DateTime? get entryTime;
 
   @BuiltValueField(wireName: "entry_type")
-  @nullable
-  num get entryType;
+  num? get entryType;
 
   factory LqlTableCommentsDto(
-      [void Function(LqlTableCommentsDtoBuilder) updates]) = _$LqlTableCommentsDto;
+          [void Function(LqlTableCommentsDtoBuilder) updates]) =
+      _$LqlTableCommentsDto;
 
   LqlTableCommentsDto._();
 }
