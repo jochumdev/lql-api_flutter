@@ -9,7 +9,7 @@ abstract class LqlTableServicesDto
   static Serializer<LqlTableServicesDto> get serializer =>
       _$lqlTableServicesDtoSerializer;
 
-  num? get state;
+  int get state;
 
   @BuiltValueField(wireName: "host_name")
   String get hostName;

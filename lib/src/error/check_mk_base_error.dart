@@ -10,13 +10,13 @@ class CheckMkBaseError implements Exception {
 
   static CheckMkBaseError of<T>(T error) {
     if (error is DioException) {
-      return new CheckMkBaseError(
+      return CheckMkBaseError(
         response: error.response,
         type: error.type,
         error: error.error,
       );
     } else {
-      return new CheckMkBaseError(error: error);
+      return CheckMkBaseError(error: error);
     }
   }
 

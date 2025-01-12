@@ -9,7 +9,7 @@ abstract class LqlTableHostsDto
   static Serializer<LqlTableHostsDto> get serializer =>
       _$lqlTableHostsDtoSerializer;
 
-  num? get state;
+  int get state;
 
   String? get name;
 

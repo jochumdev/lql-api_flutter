@@ -33,7 +33,7 @@ class Client {
     }
 
     if (!settings.validateSsl && !kIsWeb) {
-      HttpOverrides.global = new MyHttpOverrides();
+      HttpOverrides.global = MyHttpOverrides();
     }
   }
 
@@ -100,7 +100,7 @@ class Client {
       queryParams["limit"] = limit;
     }
 
-    if (queryParams.length > 0) {
+    if (queryParams.isNotEmpty) {
       return await requestLql('table/$table', queryParams: queryParams);
     }
 
@@ -116,8 +116,8 @@ class Client {
         path: "/${settings.site}/lql-api/v1/$url",
         queryParameters: queryParams);
 
-    var auth = 'Basic ' +
-        base64Encode(utf8.encode('${settings.username}:${settings.secret}'));
+    var auth =
+        'Basic ${base64Encode(utf8.encode('${settings.username}:${settings.secret}'))}';
 
     try {
       if (kDebugMode) {
@@ -172,7 +172,8 @@ class Client {
     }
   }
 
+  @override
   String toString() {
-    return 'cmkApi.Client: ${settings.baseUrl}';
+    return 'cmk_api.Client: ${settings.baseUrl}';
   }
 }
