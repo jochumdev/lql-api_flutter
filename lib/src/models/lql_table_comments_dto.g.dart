@@ -246,12 +246,13 @@ class LqlTableCommentsDtoBuilder
   _$LqlTableCommentsDto _build() {
     final _$result = _$v ??
         new _$LqlTableCommentsDto._(
-            id: id,
-            author: author,
-            comment: comment,
-            description: description,
-            entryTime: entryTime,
-            entryType: entryType);
+          id: id,
+          author: author,
+          comment: comment,
+          description: description,
+          entryTime: entryTime,
+          entryType: entryType,
+        );
     replace(_$result);
     return _$result;
   }

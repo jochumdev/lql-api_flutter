@@ -80,6 +80,18 @@ class Client {
     return BuiltList(result);
   }
 
+  Future<BuiltList<LqlTableLogDto>> lqlGetTableLogs(
+      {List<String>? columns, List<String>? filter, num? limit}) async {
+    var response = await requestLqlTable('log',
+        columns: columns, filter: filter, limit: limit);
+
+    List<LqlTableLogDto> result = [];
+    response.data.forEach((item) {
+      result.add(serializers.deserializeWith(LqlTableLogDto.serializer, item)!);
+    });
+    return BuiltList(result);
+  }
+
   Future<LqlStatsTacticalOverviewDto> lqlGetStatsTacticalOverview() async {
     var response = await requestLql('stats/tactical_overview');
     return serializers.deserializeWith(
@@ -121,7 +133,8 @@ class Client {
 
     try {
       if (kDebugMode) {
-        print("$method ${uri.toString()}");
+        // print("Auth: ${auth}");
+        print("$method ${dio.options.baseUrl}${uri.toString()}");
       }
       return await dio.request(uri.toString(),
           data: data,

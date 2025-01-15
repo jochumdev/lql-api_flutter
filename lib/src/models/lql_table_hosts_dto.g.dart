@@ -342,18 +342,19 @@ class LqlTableHostsDtoBuilder
     try {
       _$result = _$v ??
           new _$LqlTableHostsDto._(
-              state: BuiltValueNullFieldError.checkNotNull(
-                  state, r'LqlTableHostsDto', 'state'),
-              name: name,
-              address: address,
-              alias: alias,
-              displayName: displayName,
-              groups: _groups?.build(),
-              labels: _labels?.build(),
-              parents: _parents?.build(),
-              tags: _tags?.build(),
-              latency: BuiltValueNullFieldError.checkNotNull(
-                  latency, r'LqlTableHostsDto', 'latency'));
+            state: BuiltValueNullFieldError.checkNotNull(
+                state, r'LqlTableHostsDto', 'state'),
+            name: name,
+            address: address,
+            alias: alias,
+            displayName: displayName,
+            groups: _groups?.build(),
+            labels: _labels?.build(),
+            parents: _parents?.build(),
+            tags: _tags?.build(),
+            latency: BuiltValueNullFieldError.checkNotNull(
+                latency, r'LqlTableHostsDto', 'latency'),
+          );
     } catch (_) {
       late String _$failedField;
       try {

@@ -252,9 +252,10 @@ class LqlStatsTacticalOverviewDtoBuilder
     try {
       _$result = _$v ??
           new _$LqlStatsTacticalOverviewDto._(
-              hosts: hosts.build(),
-              services: services.build(),
-              events: events.build());
+            hosts: hosts.build(),
+            services: services.build(),
+            events: events.build(),
+          );
     } catch (_) {
       late String _$failedField;
       try {
@@ -396,14 +397,15 @@ class LqlStatsTOEntryDtoBuilder
   _$LqlStatsTOEntryDto _build() {
     final _$result = _$v ??
         new _$LqlStatsTOEntryDto._(
-            all: BuiltValueNullFieldError.checkNotNull(
-                all, r'LqlStatsTOEntryDto', 'all'),
-            problems: BuiltValueNullFieldError.checkNotNull(
-                problems, r'LqlStatsTOEntryDto', 'problems'),
-            unhandled: BuiltValueNullFieldError.checkNotNull(
-                unhandled, r'LqlStatsTOEntryDto', 'unhandled'),
-            stale: BuiltValueNullFieldError.checkNotNull(
-                stale, r'LqlStatsTOEntryDto', 'stale'));
+          all: BuiltValueNullFieldError.checkNotNull(
+              all, r'LqlStatsTOEntryDto', 'all'),
+          problems: BuiltValueNullFieldError.checkNotNull(
+              problems, r'LqlStatsTOEntryDto', 'problems'),
+          unhandled: BuiltValueNullFieldError.checkNotNull(
+              unhandled, r'LqlStatsTOEntryDto', 'unhandled'),
+          stale: BuiltValueNullFieldError.checkNotNull(
+              stale, r'LqlStatsTOEntryDto', 'stale'),
+        );
     replace(_$result);
     return _$result;
   }

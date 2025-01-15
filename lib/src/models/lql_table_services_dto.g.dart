@@ -273,15 +273,16 @@ class LqlTableServicesDtoBuilder
     try {
       _$result = _$v ??
           new _$LqlTableServicesDto._(
-              state: BuiltValueNullFieldError.checkNotNull(
-                  state, r'LqlTableServicesDto', 'state'),
-              hostName: BuiltValueNullFieldError.checkNotNull(
-                  hostName, r'LqlTableServicesDto', 'hostName'),
-              displayName: displayName,
-              description: description,
-              pluginOutput: pluginOutput,
-              comments: _comments?.build(),
-              lastStateChange: lastStateChange);
+            state: BuiltValueNullFieldError.checkNotNull(
+                state, r'LqlTableServicesDto', 'state'),
+            hostName: BuiltValueNullFieldError.checkNotNull(
+                hostName, r'LqlTableServicesDto', 'hostName'),
+            displayName: displayName,
+            description: description,
+            pluginOutput: pluginOutput,
+            comments: _comments?.build(),
+            lastStateChange: lastStateChange,
+          );
     } catch (_) {
       late String _$failedField;
       try {

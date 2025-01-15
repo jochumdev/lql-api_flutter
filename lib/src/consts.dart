@@ -1,7 +1,7 @@
-const svcStateUp = 0;
+const svcStateOk = 0;
 const svcStateWarn = 1;
-const svcStateCrit = 2;
-const svcStateUnkn = 3;
+const svcStateCritical = 2;
+const svcStateUnknown = 3;
 
 const hostStateUp = 0;
 const hostStateDown = 1;

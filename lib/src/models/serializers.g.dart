@@ -11,6 +11,7 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(LqlStatsTacticalOverviewDto.serializer)
       ..add(LqlTableCommentsDto.serializer)
       ..add(LqlTableHostsDto.serializer)
+      ..add(LqlTableLogDto.serializer)
       ..add(LqlTableServicesDto.serializer)
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(String)]),
