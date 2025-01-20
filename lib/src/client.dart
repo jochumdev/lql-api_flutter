@@ -39,7 +39,7 @@ class Client {
   }
 
   Future<void> testConnection() async {
-    await requestLql('ping');
+    await getApiTableHost();
   }
 
   Future<BuiltList<LqlTableLogDto>> lqlGetTableLogs(
