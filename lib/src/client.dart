@@ -234,15 +234,6 @@ class Client {
 
   Future<BuiltList<TableCommentsDto>> getApiTableComment(
       {List<String>? columns, List<String>? filter}) async {
-    columns ??= columns = [
-      'id',
-      'author',
-      'comment',
-      'description',
-      'entry_time',
-      'entry_type',
-    ];
-
     var response =
         await requestApiTable('comment', columns: columns, filter: filter);
 

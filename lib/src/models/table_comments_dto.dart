@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
@@ -14,13 +16,22 @@ abstract class TableCommentsDto
 
   String? get comment;
 
-  String? get description;
+  @BuiltValueField(wireName: "host_name")
+  String? get hostName;
 
   @BuiltValueField(wireName: "entry_time")
   DateTime? get entryTime;
 
   @BuiltValueField(wireName: "entry_type")
   num? get entryType;
+
+  bool? get persistent;
+
+  @BuiltValueField(wireName: "is_service")
+  bool? get isService;
+
+  @BuiltValueField(wireName: "service_description")
+  String? get serviceDescription;
 
   factory TableCommentsDto([void Function(TableCommentsDtoBuilder) updates]) =
       _$TableCommentsDto;

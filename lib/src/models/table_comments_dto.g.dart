@@ -41,10 +41,10 @@ class _$TableCommentsDtoSerializer
         ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
     }
-    value = object.description;
+    value = object.hostName;
     if (value != null) {
       result
-        ..add('description')
+        ..add('host_name')
         ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
     }
@@ -60,6 +60,27 @@ class _$TableCommentsDtoSerializer
       result
         ..add('entry_type')
         ..add(serializers.serialize(value, specifiedType: const FullType(num)));
+    }
+    value = object.persistent;
+    if (value != null) {
+      result
+        ..add('persistent')
+        ..add(
+            serializers.serialize(value, specifiedType: const FullType(bool)));
+    }
+    value = object.isService;
+    if (value != null) {
+      result
+        ..add('is_service')
+        ..add(
+            serializers.serialize(value, specifiedType: const FullType(bool)));
+    }
+    value = object.serviceDescription;
+    if (value != null) {
+      result
+        ..add('service_description')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     return result;
   }
@@ -88,8 +109,8 @@ class _$TableCommentsDtoSerializer
           result.comment = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
           break;
-        case 'description':
-          result.description = serializers.deserialize(value,
+        case 'host_name':
+          result.hostName = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
           break;
         case 'entry_time':
@@ -99,6 +120,18 @@ class _$TableCommentsDtoSerializer
         case 'entry_type':
           result.entryType = serializers.deserialize(value,
               specifiedType: const FullType(num)) as num?;
+          break;
+        case 'persistent':
+          result.persistent = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool?;
+          break;
+        case 'is_service':
+          result.isService = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool?;
+          break;
+        case 'service_description':
+          result.serviceDescription = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String?;
           break;
       }
     }
@@ -115,11 +148,17 @@ class _$TableCommentsDto extends TableCommentsDto {
   @override
   final String? comment;
   @override
-  final String? description;
+  final String? hostName;
   @override
   final DateTime? entryTime;
   @override
   final num? entryType;
+  @override
+  final bool? persistent;
+  @override
+  final bool? isService;
+  @override
+  final String? serviceDescription;
 
   factory _$TableCommentsDto(
           [void Function(TableCommentsDtoBuilder)? updates]) =>
@@ -129,9 +168,12 @@ class _$TableCommentsDto extends TableCommentsDto {
       {this.id,
       this.author,
       this.comment,
-      this.description,
+      this.hostName,
       this.entryTime,
-      this.entryType})
+      this.entryType,
+      this.persistent,
+      this.isService,
+      this.serviceDescription})
       : super._();
 
   @override
@@ -149,9 +191,12 @@ class _$TableCommentsDto extends TableCommentsDto {
         id == other.id &&
         author == other.author &&
         comment == other.comment &&
-        description == other.description &&
+        hostName == other.hostName &&
         entryTime == other.entryTime &&
-        entryType == other.entryType;
+        entryType == other.entryType &&
+        persistent == other.persistent &&
+        isService == other.isService &&
+        serviceDescription == other.serviceDescription;
   }
 
   @override
@@ -160,9 +205,12 @@ class _$TableCommentsDto extends TableCommentsDto {
     _$hash = $jc(_$hash, id.hashCode);
     _$hash = $jc(_$hash, author.hashCode);
     _$hash = $jc(_$hash, comment.hashCode);
-    _$hash = $jc(_$hash, description.hashCode);
+    _$hash = $jc(_$hash, hostName.hashCode);
     _$hash = $jc(_$hash, entryTime.hashCode);
     _$hash = $jc(_$hash, entryType.hashCode);
+    _$hash = $jc(_$hash, persistent.hashCode);
+    _$hash = $jc(_$hash, isService.hashCode);
+    _$hash = $jc(_$hash, serviceDescription.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -173,9 +221,12 @@ class _$TableCommentsDto extends TableCommentsDto {
           ..add('id', id)
           ..add('author', author)
           ..add('comment', comment)
-          ..add('description', description)
+          ..add('hostName', hostName)
           ..add('entryTime', entryTime)
-          ..add('entryType', entryType))
+          ..add('entryType', entryType)
+          ..add('persistent', persistent)
+          ..add('isService', isService)
+          ..add('serviceDescription', serviceDescription))
         .toString();
   }
 }
@@ -196,9 +247,9 @@ class TableCommentsDtoBuilder
   String? get comment => _$this._comment;
   set comment(String? comment) => _$this._comment = comment;
 
-  String? _description;
-  String? get description => _$this._description;
-  set description(String? description) => _$this._description = description;
+  String? _hostName;
+  String? get hostName => _$this._hostName;
+  set hostName(String? hostName) => _$this._hostName = hostName;
 
   DateTime? _entryTime;
   DateTime? get entryTime => _$this._entryTime;
@@ -208,6 +259,19 @@ class TableCommentsDtoBuilder
   num? get entryType => _$this._entryType;
   set entryType(num? entryType) => _$this._entryType = entryType;
 
+  bool? _persistent;
+  bool? get persistent => _$this._persistent;
+  set persistent(bool? persistent) => _$this._persistent = persistent;
+
+  bool? _isService;
+  bool? get isService => _$this._isService;
+  set isService(bool? isService) => _$this._isService = isService;
+
+  String? _serviceDescription;
+  String? get serviceDescription => _$this._serviceDescription;
+  set serviceDescription(String? serviceDescription) =>
+      _$this._serviceDescription = serviceDescription;
+
   TableCommentsDtoBuilder();
 
   TableCommentsDtoBuilder get _$this {
@@ -216,9 +280,12 @@ class TableCommentsDtoBuilder
       _id = $v.id;
       _author = $v.author;
       _comment = $v.comment;
-      _description = $v.description;
+      _hostName = $v.hostName;
       _entryTime = $v.entryTime;
       _entryType = $v.entryType;
+      _persistent = $v.persistent;
+      _isService = $v.isService;
+      _serviceDescription = $v.serviceDescription;
       _$v = null;
     }
     return this;
@@ -244,9 +311,12 @@ class TableCommentsDtoBuilder
           id: id,
           author: author,
           comment: comment,
-          description: description,
+          hostName: hostName,
           entryTime: entryTime,
           entryType: entryType,
+          persistent: persistent,
+          isService: isService,
+          serviceDescription: serviceDescription,
         );
     replace(_$result);
     return _$result;
