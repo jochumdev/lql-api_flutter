@@ -1,36 +1,36 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'lql_table_services_dto.dart';
+part of 'table_services_dto.dart';
 
 // **************************************************************************
 // BuiltValueGenerator
 // **************************************************************************
 
-Serializer<LqlTableServicesDto> _$lqlTableServicesDtoSerializer =
-    new _$LqlTableServicesDtoSerializer();
+Serializer<TableServicesDto> _$tableServicesDtoSerializer =
+    new _$TableServicesDtoSerializer();
 
-class _$LqlTableServicesDtoSerializer
-    implements StructuredSerializer<LqlTableServicesDto> {
+class _$TableServicesDtoSerializer
+    implements StructuredSerializer<TableServicesDto> {
   @override
-  final Iterable<Type> types = const [
-    LqlTableServicesDto,
-    _$LqlTableServicesDto
-  ];
+  final Iterable<Type> types = const [TableServicesDto, _$TableServicesDto];
   @override
-  final String wireName = 'LqlTableServicesDto';
+  final String wireName = 'TableServicesDto';
 
   @override
-  Iterable<Object?> serialize(
-      Serializers serializers, LqlTableServicesDto object,
+  Iterable<Object?> serialize(Serializers serializers, TableServicesDto object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object?>[
       'state',
       serializers.serialize(object.state, specifiedType: const FullType(int)),
-      'host_name',
-      serializers.serialize(object.hostName,
-          specifiedType: const FullType(String)),
     ];
     Object? value;
+    value = object.hostName;
+    if (value != null) {
+      result
+        ..add('host_name')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
+    }
     value = object.displayName;
     if (value != null) {
       result
@@ -71,10 +71,10 @@ class _$LqlTableServicesDtoSerializer
   }
 
   @override
-  LqlTableServicesDto deserialize(
+  TableServicesDto deserialize(
       Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new LqlTableServicesDtoBuilder();
+    final result = new TableServicesDtoBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -88,7 +88,7 @@ class _$LqlTableServicesDtoSerializer
           break;
         case 'host_name':
           result.hostName = serializers.deserialize(value,
-              specifiedType: const FullType(String))! as String;
+              specifiedType: const FullType(String)) as String?;
           break;
         case 'display_name':
           result.displayName = serializers.deserialize(value,
@@ -119,11 +119,11 @@ class _$LqlTableServicesDtoSerializer
   }
 }
 
-class _$LqlTableServicesDto extends LqlTableServicesDto {
+class _$TableServicesDto extends TableServicesDto {
   @override
   final int state;
   @override
-  final String hostName;
+  final String? hostName;
   @override
   final String? displayName;
   @override
@@ -135,38 +135,34 @@ class _$LqlTableServicesDto extends LqlTableServicesDto {
   @override
   final DateTime? lastStateChange;
 
-  factory _$LqlTableServicesDto(
-          [void Function(LqlTableServicesDtoBuilder)? updates]) =>
-      (new LqlTableServicesDtoBuilder()..update(updates))._build();
+  factory _$TableServicesDto(
+          [void Function(TableServicesDtoBuilder)? updates]) =>
+      (new TableServicesDtoBuilder()..update(updates))._build();
 
-  _$LqlTableServicesDto._(
+  _$TableServicesDto._(
       {required this.state,
-      required this.hostName,
+      this.hostName,
       this.displayName,
       this.description,
       this.pluginOutput,
       this.comments,
       this.lastStateChange})
       : super._() {
-    BuiltValueNullFieldError.checkNotNull(
-        state, r'LqlTableServicesDto', 'state');
-    BuiltValueNullFieldError.checkNotNull(
-        hostName, r'LqlTableServicesDto', 'hostName');
+    BuiltValueNullFieldError.checkNotNull(state, r'TableServicesDto', 'state');
   }
 
   @override
-  LqlTableServicesDto rebuild(
-          void Function(LqlTableServicesDtoBuilder) updates) =>
+  TableServicesDto rebuild(void Function(TableServicesDtoBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  LqlTableServicesDtoBuilder toBuilder() =>
-      new LqlTableServicesDtoBuilder()..replace(this);
+  TableServicesDtoBuilder toBuilder() =>
+      new TableServicesDtoBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is LqlTableServicesDto &&
+    return other is TableServicesDto &&
         state == other.state &&
         hostName == other.hostName &&
         displayName == other.displayName &&
@@ -192,7 +188,7 @@ class _$LqlTableServicesDto extends LqlTableServicesDto {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper(r'LqlTableServicesDto')
+    return (newBuiltValueToStringHelper(r'TableServicesDto')
           ..add('state', state)
           ..add('hostName', hostName)
           ..add('displayName', displayName)
@@ -204,9 +200,9 @@ class _$LqlTableServicesDto extends LqlTableServicesDto {
   }
 }
 
-class LqlTableServicesDtoBuilder
-    implements Builder<LqlTableServicesDto, LqlTableServicesDtoBuilder> {
-  _$LqlTableServicesDto? _$v;
+class TableServicesDtoBuilder
+    implements Builder<TableServicesDto, TableServicesDtoBuilder> {
+  _$TableServicesDto? _$v;
 
   int? _state;
   int? get state => _$this._state;
@@ -237,9 +233,9 @@ class LqlTableServicesDtoBuilder
   set lastStateChange(DateTime? lastStateChange) =>
       _$this._lastStateChange = lastStateChange;
 
-  LqlTableServicesDtoBuilder();
+  TableServicesDtoBuilder();
 
-  LqlTableServicesDtoBuilder get _$this {
+  TableServicesDtoBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
       _state = $v.state;
@@ -255,28 +251,27 @@ class LqlTableServicesDtoBuilder
   }
 
   @override
-  void replace(LqlTableServicesDto other) {
+  void replace(TableServicesDto other) {
     ArgumentError.checkNotNull(other, 'other');
-    _$v = other as _$LqlTableServicesDto;
+    _$v = other as _$TableServicesDto;
   }
 
   @override
-  void update(void Function(LqlTableServicesDtoBuilder)? updates) {
+  void update(void Function(TableServicesDtoBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  LqlTableServicesDto build() => _build();
+  TableServicesDto build() => _build();
 
-  _$LqlTableServicesDto _build() {
-    _$LqlTableServicesDto _$result;
+  _$TableServicesDto _build() {
+    _$TableServicesDto _$result;
     try {
       _$result = _$v ??
-          new _$LqlTableServicesDto._(
+          new _$TableServicesDto._(
             state: BuiltValueNullFieldError.checkNotNull(
-                state, r'LqlTableServicesDto', 'state'),
-            hostName: BuiltValueNullFieldError.checkNotNull(
-                hostName, r'LqlTableServicesDto', 'hostName'),
+                state, r'TableServicesDto', 'state'),
+            hostName: hostName,
             displayName: displayName,
             description: description,
             pluginOutput: pluginOutput,
@@ -290,7 +285,7 @@ class LqlTableServicesDtoBuilder
         _comments?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            r'LqlTableServicesDto', _$failedField, e.toString());
+            r'TableServicesDto', _$failedField, e.toString());
       }
       rethrow;
     }

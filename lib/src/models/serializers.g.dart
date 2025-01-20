@@ -7,12 +7,12 @@ part of 'serializers.dart';
 // **************************************************************************
 
 Serializers _$serializers = (new Serializers().toBuilder()
-      ..add(LqlStatsTOEntryDto.serializer)
-      ..add(LqlStatsTacticalOverviewDto.serializer)
-      ..add(LqlTableCommentsDto.serializer)
-      ..add(LqlTableHostsDto.serializer)
       ..add(LqlTableLogDto.serializer)
-      ..add(LqlTableServicesDto.serializer)
+      ..add(StatsTOEntryDto.serializer)
+      ..add(StatsTacticalOverviewDto.serializer)
+      ..add(TableCommentsDto.serializer)
+      ..add(TableHostsDto.serializer)
+      ..add(TableServicesDto.serializer)
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(String)]),
           () => new ListBuilder<String>())

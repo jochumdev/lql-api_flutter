@@ -1,27 +1,23 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'lql_table_comments_dto.dart';
+part of 'table_comments_dto.dart';
 
 // **************************************************************************
 // BuiltValueGenerator
 // **************************************************************************
 
-Serializer<LqlTableCommentsDto> _$lqlTableCommentsDtoSerializer =
-    new _$LqlTableCommentsDtoSerializer();
+Serializer<TableCommentsDto> _$tableCommentsDtoSerializer =
+    new _$TableCommentsDtoSerializer();
 
-class _$LqlTableCommentsDtoSerializer
-    implements StructuredSerializer<LqlTableCommentsDto> {
+class _$TableCommentsDtoSerializer
+    implements StructuredSerializer<TableCommentsDto> {
   @override
-  final Iterable<Type> types = const [
-    LqlTableCommentsDto,
-    _$LqlTableCommentsDto
-  ];
+  final Iterable<Type> types = const [TableCommentsDto, _$TableCommentsDto];
   @override
-  final String wireName = 'LqlTableCommentsDto';
+  final String wireName = 'TableCommentsDto';
 
   @override
-  Iterable<Object?> serialize(
-      Serializers serializers, LqlTableCommentsDto object,
+  Iterable<Object?> serialize(Serializers serializers, TableCommentsDto object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object?>[];
     Object? value;
@@ -69,10 +65,10 @@ class _$LqlTableCommentsDtoSerializer
   }
 
   @override
-  LqlTableCommentsDto deserialize(
+  TableCommentsDto deserialize(
       Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new LqlTableCommentsDtoBuilder();
+    final result = new TableCommentsDtoBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -111,7 +107,7 @@ class _$LqlTableCommentsDtoSerializer
   }
 }
 
-class _$LqlTableCommentsDto extends LqlTableCommentsDto {
+class _$TableCommentsDto extends TableCommentsDto {
   @override
   final num? id;
   @override
@@ -125,11 +121,11 @@ class _$LqlTableCommentsDto extends LqlTableCommentsDto {
   @override
   final num? entryType;
 
-  factory _$LqlTableCommentsDto(
-          [void Function(LqlTableCommentsDtoBuilder)? updates]) =>
-      (new LqlTableCommentsDtoBuilder()..update(updates))._build();
+  factory _$TableCommentsDto(
+          [void Function(TableCommentsDtoBuilder)? updates]) =>
+      (new TableCommentsDtoBuilder()..update(updates))._build();
 
-  _$LqlTableCommentsDto._(
+  _$TableCommentsDto._(
       {this.id,
       this.author,
       this.comment,
@@ -139,18 +135,17 @@ class _$LqlTableCommentsDto extends LqlTableCommentsDto {
       : super._();
 
   @override
-  LqlTableCommentsDto rebuild(
-          void Function(LqlTableCommentsDtoBuilder) updates) =>
+  TableCommentsDto rebuild(void Function(TableCommentsDtoBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  LqlTableCommentsDtoBuilder toBuilder() =>
-      new LqlTableCommentsDtoBuilder()..replace(this);
+  TableCommentsDtoBuilder toBuilder() =>
+      new TableCommentsDtoBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is LqlTableCommentsDto &&
+    return other is TableCommentsDto &&
         id == other.id &&
         author == other.author &&
         comment == other.comment &&
@@ -174,7 +169,7 @@ class _$LqlTableCommentsDto extends LqlTableCommentsDto {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper(r'LqlTableCommentsDto')
+    return (newBuiltValueToStringHelper(r'TableCommentsDto')
           ..add('id', id)
           ..add('author', author)
           ..add('comment', comment)
@@ -185,9 +180,9 @@ class _$LqlTableCommentsDto extends LqlTableCommentsDto {
   }
 }
 
-class LqlTableCommentsDtoBuilder
-    implements Builder<LqlTableCommentsDto, LqlTableCommentsDtoBuilder> {
-  _$LqlTableCommentsDto? _$v;
+class TableCommentsDtoBuilder
+    implements Builder<TableCommentsDto, TableCommentsDtoBuilder> {
+  _$TableCommentsDto? _$v;
 
   num? _id;
   num? get id => _$this._id;
@@ -213,9 +208,9 @@ class LqlTableCommentsDtoBuilder
   num? get entryType => _$this._entryType;
   set entryType(num? entryType) => _$this._entryType = entryType;
 
-  LqlTableCommentsDtoBuilder();
+  TableCommentsDtoBuilder();
 
-  LqlTableCommentsDtoBuilder get _$this {
+  TableCommentsDtoBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
       _id = $v.id;
@@ -230,22 +225,22 @@ class LqlTableCommentsDtoBuilder
   }
 
   @override
-  void replace(LqlTableCommentsDto other) {
+  void replace(TableCommentsDto other) {
     ArgumentError.checkNotNull(other, 'other');
-    _$v = other as _$LqlTableCommentsDto;
+    _$v = other as _$TableCommentsDto;
   }
 
   @override
-  void update(void Function(LqlTableCommentsDtoBuilder)? updates) {
+  void update(void Function(TableCommentsDtoBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  LqlTableCommentsDto build() => _build();
+  TableCommentsDto build() => _build();
 
-  _$LqlTableCommentsDto _build() {
+  _$TableCommentsDto _build() {
     final _$result = _$v ??
-        new _$LqlTableCommentsDto._(
+        new _$TableCommentsDto._(
           id: id,
           author: author,
           comment: comment,

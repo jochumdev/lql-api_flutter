@@ -1,29 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'lql_table_hosts_dto.dart';
+part of 'table_hosts_dto.dart';
 
 // **************************************************************************
 // BuiltValueGenerator
 // **************************************************************************
 
-Serializer<LqlTableHostsDto> _$lqlTableHostsDtoSerializer =
-    new _$LqlTableHostsDtoSerializer();
+Serializer<TableHostsDto> _$tableHostsDtoSerializer =
+    new _$TableHostsDtoSerializer();
 
-class _$LqlTableHostsDtoSerializer
-    implements StructuredSerializer<LqlTableHostsDto> {
+class _$TableHostsDtoSerializer implements StructuredSerializer<TableHostsDto> {
   @override
-  final Iterable<Type> types = const [LqlTableHostsDto, _$LqlTableHostsDto];
+  final Iterable<Type> types = const [TableHostsDto, _$TableHostsDto];
   @override
-  final String wireName = 'LqlTableHostsDto';
+  final String wireName = 'TableHostsDto';
 
   @override
-  Iterable<Object?> serialize(Serializers serializers, LqlTableHostsDto object,
+  Iterable<Object?> serialize(Serializers serializers, TableHostsDto object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object?>[
       'state',
       serializers.serialize(object.state, specifiedType: const FullType(int)),
-      'latency',
-      serializers.serialize(object.latency, specifiedType: const FullType(num)),
     ];
     Object? value;
     value = object.name;
@@ -86,14 +83,20 @@ class _$LqlTableHostsDtoSerializer
             specifiedType: const FullType(BuiltMap,
                 const [const FullType(String), const FullType(String)])));
     }
+    value = object.latency;
+    if (value != null) {
+      result
+        ..add('latency')
+        ..add(serializers.serialize(value, specifiedType: const FullType(num)));
+    }
     return result;
   }
 
   @override
-  LqlTableHostsDto deserialize(
+  TableHostsDto deserialize(
       Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new LqlTableHostsDtoBuilder();
+    final result = new TableHostsDtoBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -145,7 +148,7 @@ class _$LqlTableHostsDtoSerializer
           break;
         case 'latency':
           result.latency = serializers.deserialize(value,
-              specifiedType: const FullType(num))! as num;
+              specifiedType: const FullType(num)) as num?;
           break;
       }
     }
@@ -154,7 +157,7 @@ class _$LqlTableHostsDtoSerializer
   }
 }
 
-class _$LqlTableHostsDto extends LqlTableHostsDto {
+class _$TableHostsDto extends TableHostsDto {
   @override
   final int state;
   @override
@@ -174,13 +177,12 @@ class _$LqlTableHostsDto extends LqlTableHostsDto {
   @override
   final BuiltMap<String, String>? tags;
   @override
-  final num latency;
+  final num? latency;
 
-  factory _$LqlTableHostsDto(
-          [void Function(LqlTableHostsDtoBuilder)? updates]) =>
-      (new LqlTableHostsDtoBuilder()..update(updates))._build();
+  factory _$TableHostsDto([void Function(TableHostsDtoBuilder)? updates]) =>
+      (new TableHostsDtoBuilder()..update(updates))._build();
 
-  _$LqlTableHostsDto._(
+  _$TableHostsDto._(
       {required this.state,
       this.name,
       this.address,
@@ -190,25 +192,22 @@ class _$LqlTableHostsDto extends LqlTableHostsDto {
       this.labels,
       this.parents,
       this.tags,
-      required this.latency})
+      this.latency})
       : super._() {
-    BuiltValueNullFieldError.checkNotNull(state, r'LqlTableHostsDto', 'state');
-    BuiltValueNullFieldError.checkNotNull(
-        latency, r'LqlTableHostsDto', 'latency');
+    BuiltValueNullFieldError.checkNotNull(state, r'TableHostsDto', 'state');
   }
 
   @override
-  LqlTableHostsDto rebuild(void Function(LqlTableHostsDtoBuilder) updates) =>
+  TableHostsDto rebuild(void Function(TableHostsDtoBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  LqlTableHostsDtoBuilder toBuilder() =>
-      new LqlTableHostsDtoBuilder()..replace(this);
+  TableHostsDtoBuilder toBuilder() => new TableHostsDtoBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is LqlTableHostsDto &&
+    return other is TableHostsDto &&
         state == other.state &&
         name == other.name &&
         address == other.address &&
@@ -240,7 +239,7 @@ class _$LqlTableHostsDto extends LqlTableHostsDto {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper(r'LqlTableHostsDto')
+    return (newBuiltValueToStringHelper(r'TableHostsDto')
           ..add('state', state)
           ..add('name', name)
           ..add('address', address)
@@ -255,9 +254,9 @@ class _$LqlTableHostsDto extends LqlTableHostsDto {
   }
 }
 
-class LqlTableHostsDtoBuilder
-    implements Builder<LqlTableHostsDto, LqlTableHostsDtoBuilder> {
-  _$LqlTableHostsDto? _$v;
+class TableHostsDtoBuilder
+    implements Builder<TableHostsDto, TableHostsDtoBuilder> {
+  _$TableHostsDto? _$v;
 
   int? _state;
   int? get state => _$this._state;
@@ -303,9 +302,9 @@ class LqlTableHostsDtoBuilder
   num? get latency => _$this._latency;
   set latency(num? latency) => _$this._latency = latency;
 
-  LqlTableHostsDtoBuilder();
+  TableHostsDtoBuilder();
 
-  LqlTableHostsDtoBuilder get _$this {
+  TableHostsDtoBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
       _state = $v.state;
@@ -324,26 +323,26 @@ class LqlTableHostsDtoBuilder
   }
 
   @override
-  void replace(LqlTableHostsDto other) {
+  void replace(TableHostsDto other) {
     ArgumentError.checkNotNull(other, 'other');
-    _$v = other as _$LqlTableHostsDto;
+    _$v = other as _$TableHostsDto;
   }
 
   @override
-  void update(void Function(LqlTableHostsDtoBuilder)? updates) {
+  void update(void Function(TableHostsDtoBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  LqlTableHostsDto build() => _build();
+  TableHostsDto build() => _build();
 
-  _$LqlTableHostsDto _build() {
-    _$LqlTableHostsDto _$result;
+  _$TableHostsDto _build() {
+    _$TableHostsDto _$result;
     try {
       _$result = _$v ??
-          new _$LqlTableHostsDto._(
+          new _$TableHostsDto._(
             state: BuiltValueNullFieldError.checkNotNull(
-                state, r'LqlTableHostsDto', 'state'),
+                state, r'TableHostsDto', 'state'),
             name: name,
             address: address,
             alias: alias,
@@ -352,8 +351,7 @@ class LqlTableHostsDtoBuilder
             labels: _labels?.build(),
             parents: _parents?.build(),
             tags: _tags?.build(),
-            latency: BuiltValueNullFieldError.checkNotNull(
-                latency, r'LqlTableHostsDto', 'latency'),
+            latency: latency,
           );
     } catch (_) {
       late String _$failedField;
@@ -368,7 +366,7 @@ class LqlTableHostsDtoBuilder
         _tags?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            r'LqlTableHostsDto', _$failedField, e.toString());
+            r'TableHostsDto', _$failedField, e.toString());
       }
       rethrow;
     }

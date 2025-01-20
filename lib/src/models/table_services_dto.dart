@@ -2,17 +2,17 @@ import 'package:built_value/built_value.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 
-part 'lql_table_services_dto.g.dart';
+part 'table_services_dto.g.dart';
 
-abstract class LqlTableServicesDto
-    implements Built<LqlTableServicesDto, LqlTableServicesDtoBuilder> {
-  static Serializer<LqlTableServicesDto> get serializer =>
-      _$lqlTableServicesDtoSerializer;
+abstract class TableServicesDto
+    implements Built<TableServicesDto, TableServicesDtoBuilder> {
+  static Serializer<TableServicesDto> get serializer =>
+      _$tableServicesDtoSerializer;
 
   int get state;
 
   @BuiltValueField(wireName: "host_name")
-  String get hostName;
+  String? get hostName;
 
   @BuiltValueField(wireName: "display_name")
   String? get displayName;
@@ -27,9 +27,8 @@ abstract class LqlTableServicesDto
   @BuiltValueField(wireName: "last_state_change")
   DateTime? get lastStateChange;
 
-  factory LqlTableServicesDto(
-          [void Function(LqlTableServicesDtoBuilder) updates]) =
-      _$LqlTableServicesDto;
+  factory TableServicesDto([void Function(TableServicesDtoBuilder) updates]) =
+      _$TableServicesDto;
 
-  LqlTableServicesDto._();
+  TableServicesDto._();
 }
