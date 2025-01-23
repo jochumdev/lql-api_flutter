@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
@@ -20,7 +18,7 @@ abstract class TableCommentsDto
   String? get hostName;
 
   @BuiltValueField(wireName: "entry_time")
-  DateTime? get entryTime;
+  String? get entryTime;
 
   @BuiltValueField(wireName: "entry_type")
   num? get entryType;

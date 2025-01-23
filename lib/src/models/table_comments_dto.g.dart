@@ -53,7 +53,7 @@ class _$TableCommentsDtoSerializer
       result
         ..add('entry_time')
         ..add(serializers.serialize(value,
-            specifiedType: const FullType(DateTime)));
+            specifiedType: const FullType(String)));
     }
     value = object.entryType;
     if (value != null) {
@@ -115,7 +115,7 @@ class _$TableCommentsDtoSerializer
           break;
         case 'entry_time':
           result.entryTime = serializers.deserialize(value,
-              specifiedType: const FullType(DateTime)) as DateTime?;
+              specifiedType: const FullType(String)) as String?;
           break;
         case 'entry_type':
           result.entryType = serializers.deserialize(value,
@@ -150,7 +150,7 @@ class _$TableCommentsDto extends TableCommentsDto {
   @override
   final String? hostName;
   @override
-  final DateTime? entryTime;
+  final String? entryTime;
   @override
   final num? entryType;
   @override
@@ -251,9 +251,9 @@ class TableCommentsDtoBuilder
   String? get hostName => _$this._hostName;
   set hostName(String? hostName) => _$this._hostName = hostName;
 
-  DateTime? _entryTime;
-  DateTime? get entryTime => _$this._entryTime;
-  set entryTime(DateTime? entryTime) => _$this._entryTime = entryTime;
+  String? _entryTime;
+  String? get entryTime => _$this._entryTime;
+  set entryTime(String? entryTime) => _$this._entryTime = entryTime;
 
   num? _entryType;
   num? get entryType => _$this._entryType;
