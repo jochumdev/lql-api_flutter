@@ -24,6 +24,12 @@ class _$TableServicesDtoSerializer
       serializers.serialize(object.state, specifiedType: const FullType(int)),
     ];
     Object? value;
+    value = object.acknowledged;
+    if (value != null) {
+      result
+        ..add('acknowledged')
+        ..add(serializers.serialize(value, specifiedType: const FullType(int)));
+    }
     value = object.hostName;
     if (value != null) {
       result
@@ -86,6 +92,10 @@ class _$TableServicesDtoSerializer
           result.state = serializers.deserialize(value,
               specifiedType: const FullType(int))! as int;
           break;
+        case 'acknowledged':
+          result.acknowledged = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int?;
+          break;
         case 'host_name':
           result.hostName = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
@@ -123,6 +133,8 @@ class _$TableServicesDto extends TableServicesDto {
   @override
   final int state;
   @override
+  final int? acknowledged;
+  @override
   final String? hostName;
   @override
   final String? displayName;
@@ -141,6 +153,7 @@ class _$TableServicesDto extends TableServicesDto {
 
   _$TableServicesDto._(
       {required this.state,
+      this.acknowledged,
       this.hostName,
       this.displayName,
       this.description,
@@ -164,6 +177,7 @@ class _$TableServicesDto extends TableServicesDto {
     if (identical(other, this)) return true;
     return other is TableServicesDto &&
         state == other.state &&
+        acknowledged == other.acknowledged &&
         hostName == other.hostName &&
         displayName == other.displayName &&
         description == other.description &&
@@ -176,6 +190,7 @@ class _$TableServicesDto extends TableServicesDto {
   int get hashCode {
     var _$hash = 0;
     _$hash = $jc(_$hash, state.hashCode);
+    _$hash = $jc(_$hash, acknowledged.hashCode);
     _$hash = $jc(_$hash, hostName.hashCode);
     _$hash = $jc(_$hash, displayName.hashCode);
     _$hash = $jc(_$hash, description.hashCode);
@@ -190,6 +205,7 @@ class _$TableServicesDto extends TableServicesDto {
   String toString() {
     return (newBuiltValueToStringHelper(r'TableServicesDto')
           ..add('state', state)
+          ..add('acknowledged', acknowledged)
           ..add('hostName', hostName)
           ..add('displayName', displayName)
           ..add('description', description)
@@ -207,6 +223,10 @@ class TableServicesDtoBuilder
   int? _state;
   int? get state => _$this._state;
   set state(int? state) => _$this._state = state;
+
+  int? _acknowledged;
+  int? get acknowledged => _$this._acknowledged;
+  set acknowledged(int? acknowledged) => _$this._acknowledged = acknowledged;
 
   String? _hostName;
   String? get hostName => _$this._hostName;
@@ -239,6 +259,7 @@ class TableServicesDtoBuilder
     final $v = _$v;
     if ($v != null) {
       _state = $v.state;
+      _acknowledged = $v.acknowledged;
       _hostName = $v.hostName;
       _displayName = $v.displayName;
       _description = $v.description;
@@ -271,6 +292,7 @@ class TableServicesDtoBuilder
           new _$TableServicesDto._(
             state: BuiltValueNullFieldError.checkNotNull(
                 state, r'TableServicesDto', 'state'),
+            acknowledged: acknowledged,
             hostName: hostName,
             displayName: displayName,
             description: description,

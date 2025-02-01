@@ -23,6 +23,12 @@ class _$TableHostsDtoSerializer implements StructuredSerializer<TableHostsDto> {
       serializers.serialize(object.state, specifiedType: const FullType(int)),
     ];
     Object? value;
+    value = object.acknowledged;
+    if (value != null) {
+      result
+        ..add('acknowledged')
+        ..add(serializers.serialize(value, specifiedType: const FullType(int)));
+    }
     value = object.name;
     if (value != null) {
       result
@@ -108,6 +114,10 @@ class _$TableHostsDtoSerializer implements StructuredSerializer<TableHostsDto> {
           result.state = serializers.deserialize(value,
               specifiedType: const FullType(int))! as int;
           break;
+        case 'acknowledged':
+          result.acknowledged = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int?;
+          break;
         case 'name':
           result.name = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
@@ -161,6 +171,8 @@ class _$TableHostsDto extends TableHostsDto {
   @override
   final int state;
   @override
+  final int? acknowledged;
+  @override
   final String? name;
   @override
   final String? address;
@@ -184,6 +196,7 @@ class _$TableHostsDto extends TableHostsDto {
 
   _$TableHostsDto._(
       {required this.state,
+      this.acknowledged,
       this.name,
       this.address,
       this.alias,
@@ -209,6 +222,7 @@ class _$TableHostsDto extends TableHostsDto {
     if (identical(other, this)) return true;
     return other is TableHostsDto &&
         state == other.state &&
+        acknowledged == other.acknowledged &&
         name == other.name &&
         address == other.address &&
         alias == other.alias &&
@@ -224,6 +238,7 @@ class _$TableHostsDto extends TableHostsDto {
   int get hashCode {
     var _$hash = 0;
     _$hash = $jc(_$hash, state.hashCode);
+    _$hash = $jc(_$hash, acknowledged.hashCode);
     _$hash = $jc(_$hash, name.hashCode);
     _$hash = $jc(_$hash, address.hashCode);
     _$hash = $jc(_$hash, alias.hashCode);
@@ -241,6 +256,7 @@ class _$TableHostsDto extends TableHostsDto {
   String toString() {
     return (newBuiltValueToStringHelper(r'TableHostsDto')
           ..add('state', state)
+          ..add('acknowledged', acknowledged)
           ..add('name', name)
           ..add('address', address)
           ..add('alias', alias)
@@ -261,6 +277,10 @@ class TableHostsDtoBuilder
   int? _state;
   int? get state => _$this._state;
   set state(int? state) => _$this._state = state;
+
+  int? _acknowledged;
+  int? get acknowledged => _$this._acknowledged;
+  set acknowledged(int? acknowledged) => _$this._acknowledged = acknowledged;
 
   String? _name;
   String? get name => _$this._name;
@@ -308,6 +328,7 @@ class TableHostsDtoBuilder
     final $v = _$v;
     if ($v != null) {
       _state = $v.state;
+      _acknowledged = $v.acknowledged;
       _name = $v.name;
       _address = $v.address;
       _alias = $v.alias;
@@ -343,6 +364,7 @@ class TableHostsDtoBuilder
           new _$TableHostsDto._(
             state: BuiltValueNullFieldError.checkNotNull(
                 state, r'TableHostsDto', 'state'),
+            acknowledged: acknowledged,
             name: name,
             address: address,
             alias: alias,

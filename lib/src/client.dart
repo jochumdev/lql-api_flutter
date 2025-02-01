@@ -187,6 +187,7 @@ class Client {
       {List<String>? columns, List<String>? filter}) async {
     columns ??= columns = [
       'state',
+      'acknowledged',
       'name',
       'alias',
       'address',
@@ -213,6 +214,7 @@ class Client {
       {List<String>? columns, List<String>? filter}) async {
     columns ??= columns = [
       'state',
+      'acknowledged',
       'host_name',
       'display_name',
       'description',

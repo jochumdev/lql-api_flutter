@@ -10,6 +10,8 @@ abstract class TableHostsDto
 
   int get state;
 
+  int? get acknowledged;
+
   String? get name;
 
   String? get address;

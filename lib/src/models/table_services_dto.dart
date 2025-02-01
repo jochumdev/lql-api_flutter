@@ -11,6 +11,8 @@ abstract class TableServicesDto
 
   int get state;
 
+  int? get acknowledged;
+
   @BuiltValueField(wireName: "host_name")
   String? get hostName;
 
