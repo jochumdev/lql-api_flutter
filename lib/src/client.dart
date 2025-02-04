@@ -82,8 +82,6 @@ class Client {
           print(e.message);
         }
       }
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
       throw CheckMkBaseError.of<DioException>(e);
     }
   }
@@ -253,8 +251,6 @@ class Client {
           print(e.message);
         }
       }
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
       throw CheckMkBaseError.of<DioException>(e);
     }
   }
