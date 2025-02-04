@@ -293,7 +293,7 @@ class Client {
             final s = row[ih].toString();
             if (s.endsWith('s')) {
               rr.time = now
-                  .subtract(Duration(seconds: int.parse(s.split(' ')[0])))
+                  .subtract(Duration(seconds: int.parse(s.split('.')[0])))
                   .toUtc();
             } else if (s.endsWith('m')) {
               rr.time = now
