@@ -6,7 +6,7 @@ import 'datetime_from_epoch_serializer.dart';
 import 'stats_tactical_overview_dto.dart';
 import 'table_comments_dto.dart';
 import 'table_hosts_dto.dart';
-import './lql_table_log_dto.dart';
+import 'table_log_dto.dart';
 import 'table_services_dto.dart';
 
 part 'serializers.g.dart';
@@ -15,7 +15,7 @@ part 'serializers.g.dart';
   StatsTacticalOverviewDto,
   TableCommentsDto,
   TableHostsDto,
-  LqlTableLogDto,
+  TableLogDto,
   TableServicesDto,
 ])
 final Serializers serializers = (_$serializers.toBuilder()

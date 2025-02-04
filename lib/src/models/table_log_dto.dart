@@ -1,12 +1,10 @@
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
-part 'lql_table_log_dto.g.dart';
+part 'table_log_dto.g.dart';
 
-abstract class LqlTableLogDto
-    implements Built<LqlTableLogDto, LqlTableLogDtoBuilder> {
-  static Serializer<LqlTableLogDto> get serializer =>
-      _$lqlTableLogDtoSerializer;
+abstract class TableLogDto implements Built<TableLogDto, TableLogDtoBuilder> {
+  static Serializer<TableLogDto> get serializer => _$tableLogDtoSerializer;
 
   int get state;
 
@@ -21,8 +19,8 @@ abstract class LqlTableLogDto
 
   DateTime get time;
 
-  factory LqlTableLogDto([void Function(LqlTableLogDtoBuilder) updates]) =
-      _$LqlTableLogDto;
+  factory TableLogDto([void Function(TableLogDtoBuilder) updates]) =
+      _$TableLogDto;
 
-  LqlTableLogDto._();
+  TableLogDto._();
 }

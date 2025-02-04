@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:check_mk_api/src/consts.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'dart:io' if (kIsWeb) 'dart:html';
@@ -40,79 +39,6 @@ class Client {
 
   Future<void> testConnection() async {
     await getApiTableHost();
-  }
-
-  Future<BuiltList<LqlTableLogDto>> lqlGetTableLogs(
-      {List<String>? columns, List<String>? filter, num? limit}) async {
-    var response = await requestLqlTable('log',
-        columns: columns, filter: filter, limit: limit);
-
-    List<LqlTableLogDto> result = [];
-    response.data.forEach((item) {
-      result.add(serializers.deserializeWith(LqlTableLogDto.serializer, item)!);
-    });
-    return BuiltList(result);
-  }
-
-  Future<Response> requestLqlTable(String table,
-      {List<String>? columns, List<String>? filter, num? limit}) async {
-    Map<String, dynamic /*String|Iterable<String>*/ > queryParams = {};
-
-    if (columns != null) {
-      queryParams["column"] = columns;
-    }
-    if (filter != null) {
-      queryParams["filter"] = filter;
-    }
-    if (limit != null) {
-      queryParams["limit"] = limit;
-    }
-
-    if (queryParams.isNotEmpty) {
-      return await requestLql('table/$table', queryParams: queryParams);
-    }
-
-    return await requestLql('table/$table');
-  }
-
-  Future<Response> requestLql(String url,
-      {String method = 'GET',
-      Map<String, dynamic /*String|Iterable<String>*/ >? queryParams,
-      dynamic data}) async {
-    Uri uri;
-    uri = Uri(
-        path: "/${settings.site}/lql-api/v1/$url",
-        queryParameters: queryParams);
-
-    var auth =
-        'Basic ${base64Encode(utf8.encode('${settings.username}:${settings.secret}'))}';
-
-    try {
-      if (kDebugMode) {
-        // print("Auth: ${auth}");
-        print("$method ${dio.options.baseUrl}${uri.toString()}");
-      }
-      return await dio.request(uri.toString(),
-          data: data,
-          options: Options(
-              method: method,
-              headers: <String, String>{'authorization': auth}));
-    } on DioException catch (e) {
-      if (kDebugMode) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx and is also not 304.
-        if (e.response != null) {
-          print(e.response!.data);
-          print(e.response!.headers);
-        } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          print(e.message);
-        }
-      }
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      throw CheckMkBaseError.of<DioException>(e);
-    }
   }
 
   Future<Response> requestApi(
@@ -291,6 +217,136 @@ class Client {
       b.services.crit = sCrit;
       b.services.unkn = sUnkn;
     });
+  }
+
+  Future<Response> requestView(String view,
+      {Map<String, dynamic> query = const {}}) async {
+    query['view_name'] = view;
+    query['output_format'] = 'json';
+
+    Uri uri =
+        Uri(path: "/${settings.site}/check_mk/view.py", queryParameters: query);
+
+    try {
+      return await dio.request(
+        uri.toString(),
+        options: Options(
+          method: 'GET',
+          headers: <String, String>{
+            'authorization': 'Bearer ${settings.username} ${settings.secret}',
+            'content-type': 'application/json',
+            'accept': 'application/json',
+          },
+        ),
+      );
+    } on DioException catch (e) {
+      if (kDebugMode) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx and is also not 304.
+        if (e.response != null) {
+          print(e.requestOptions.uri);
+          print(e.response!.data);
+          print(e.response!.headers);
+        } else {
+          // Something happened in setting up or sending the request that triggered an Error
+          print(e.requestOptions.uri);
+          print(e.message);
+        }
+      }
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      throw CheckMkBaseError.of<DioException>(e);
+    }
+  }
+
+  Future<BuiltList<TableLogDto>> getViewEvents({int fromSecs = 60}) async {
+    final query = <String, dynamic>{
+      'logtime_from': fromSecs.toString(),
+      'logtime_from_range': '1',
+      'logst_h1': 'on',
+      'logst_h2': 'on',
+      'logst_s1': 'on',
+      'logst_s2': 'on',
+      'logst_s3': 'on',
+    };
+
+    var response = await requestView('events', query: query);
+
+    if (response.data.length < 2) {
+      return BuiltList<TableLogDto>();
+    }
+
+    var result = <TableLogDto>[];
+    final headers = response.data[0];
+    for (var ir = 1; ir < response.data.length; ir++) {
+      var row = response.data[ir];
+      var rr = TableLogDtoBuilder();
+      for (var ih = 0; ih < headers.length; ih++) {
+        switch (headers[ih]) {
+          case 'log_icon':
+            if (row[ih] != 'Service alert' && row[ih] != 'Host alert') {
+              break;
+            }
+            break;
+          case 'log_time':
+            final now = DateTime.now();
+            final s = row[ih].toString();
+            if (s.endsWith('s')) {
+              rr.time = now
+                  .subtract(Duration(seconds: int.parse(s.split(' ')[0])))
+                  .toUtc();
+            } else if (s.endsWith('m')) {
+              rr.time = now
+                  .subtract(Duration(minutes: int.parse(s.split(' ')[0])))
+                  .toUtc();
+            } else if (s.endsWith('h')) {
+              rr.time = now
+                  .subtract(Duration(hours: int.parse(s.split(' ')[0])))
+                  .toUtc();
+            }
+
+            break;
+          case 'log_type':
+            break;
+          case 'host':
+            rr.hostName = row[ih].toString();
+            break;
+          case 'service_description':
+            rr.displayName = row[ih].toString();
+            break;
+          case 'log_state_info':
+            final s = row[ih].toString();
+            if (s.contains('DOWN')) {
+              rr.state = svcStateUnknown;
+            } else if (s.contains('CRITICAL')) {
+              rr.state = svcStateCritical;
+            } else if (s.contains('WARNING')) {
+              rr.state = svcStateWarn;
+            }
+            break;
+          case 'log_plugin_output':
+            rr.pluginOutput = row[ih].toString();
+            break;
+          default:
+        }
+      }
+
+      // Nothing found.
+      if (rr.state == null) {
+        continue;
+      }
+
+      result.add(
+        TableLogDto((b) => b
+          ..state = rr.state
+          ..time = rr.time
+          ..hostName = rr.hostName
+          ..displayName = rr.displayName
+          ..pluginOutput = rr.pluginOutput),
+      );
+    }
+
+    return BuiltList(result);
   }
 
   @override

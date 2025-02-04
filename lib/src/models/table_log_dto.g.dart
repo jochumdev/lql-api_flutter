@@ -1,23 +1,21 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'lql_table_log_dto.dart';
+part of 'table_log_dto.dart';
 
 // **************************************************************************
 // BuiltValueGenerator
 // **************************************************************************
 
-Serializer<LqlTableLogDto> _$lqlTableLogDtoSerializer =
-    new _$LqlTableLogDtoSerializer();
+Serializer<TableLogDto> _$tableLogDtoSerializer = new _$TableLogDtoSerializer();
 
-class _$LqlTableLogDtoSerializer
-    implements StructuredSerializer<LqlTableLogDto> {
+class _$TableLogDtoSerializer implements StructuredSerializer<TableLogDto> {
   @override
-  final Iterable<Type> types = const [LqlTableLogDto, _$LqlTableLogDto];
+  final Iterable<Type> types = const [TableLogDto, _$TableLogDto];
   @override
-  final String wireName = 'LqlTableLogDto';
+  final String wireName = 'TableLogDto';
 
   @override
-  Iterable<Object?> serialize(Serializers serializers, LqlTableLogDto object,
+  Iterable<Object?> serialize(Serializers serializers, TableLogDto object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object?>[
       'state',
@@ -40,10 +38,9 @@ class _$LqlTableLogDtoSerializer
   }
 
   @override
-  LqlTableLogDto deserialize(
-      Serializers serializers, Iterable<Object?> serialized,
+  TableLogDto deserialize(Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new LqlTableLogDtoBuilder();
+    final result = new TableLogDtoBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -78,7 +75,7 @@ class _$LqlTableLogDtoSerializer
   }
 }
 
-class _$LqlTableLogDto extends LqlTableLogDto {
+class _$TableLogDto extends TableLogDto {
   @override
   final int state;
   @override
@@ -90,38 +87,36 @@ class _$LqlTableLogDto extends LqlTableLogDto {
   @override
   final DateTime time;
 
-  factory _$LqlTableLogDto([void Function(LqlTableLogDtoBuilder)? updates]) =>
-      (new LqlTableLogDtoBuilder()..update(updates))._build();
+  factory _$TableLogDto([void Function(TableLogDtoBuilder)? updates]) =>
+      (new TableLogDtoBuilder()..update(updates))._build();
 
-  _$LqlTableLogDto._(
+  _$TableLogDto._(
       {required this.state,
       required this.hostName,
       required this.displayName,
       required this.pluginOutput,
       required this.time})
       : super._() {
-    BuiltValueNullFieldError.checkNotNull(state, r'LqlTableLogDto', 'state');
+    BuiltValueNullFieldError.checkNotNull(state, r'TableLogDto', 'state');
+    BuiltValueNullFieldError.checkNotNull(hostName, r'TableLogDto', 'hostName');
     BuiltValueNullFieldError.checkNotNull(
-        hostName, r'LqlTableLogDto', 'hostName');
+        displayName, r'TableLogDto', 'displayName');
     BuiltValueNullFieldError.checkNotNull(
-        displayName, r'LqlTableLogDto', 'displayName');
-    BuiltValueNullFieldError.checkNotNull(
-        pluginOutput, r'LqlTableLogDto', 'pluginOutput');
-    BuiltValueNullFieldError.checkNotNull(time, r'LqlTableLogDto', 'time');
+        pluginOutput, r'TableLogDto', 'pluginOutput');
+    BuiltValueNullFieldError.checkNotNull(time, r'TableLogDto', 'time');
   }
 
   @override
-  LqlTableLogDto rebuild(void Function(LqlTableLogDtoBuilder) updates) =>
+  TableLogDto rebuild(void Function(TableLogDtoBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  LqlTableLogDtoBuilder toBuilder() =>
-      new LqlTableLogDtoBuilder()..replace(this);
+  TableLogDtoBuilder toBuilder() => new TableLogDtoBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is LqlTableLogDto &&
+    return other is TableLogDto &&
         state == other.state &&
         hostName == other.hostName &&
         displayName == other.displayName &&
@@ -143,7 +138,7 @@ class _$LqlTableLogDto extends LqlTableLogDto {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper(r'LqlTableLogDto')
+    return (newBuiltValueToStringHelper(r'TableLogDto')
           ..add('state', state)
           ..add('hostName', hostName)
           ..add('displayName', displayName)
@@ -153,9 +148,8 @@ class _$LqlTableLogDto extends LqlTableLogDto {
   }
 }
 
-class LqlTableLogDtoBuilder
-    implements Builder<LqlTableLogDto, LqlTableLogDtoBuilder> {
-  _$LqlTableLogDto? _$v;
+class TableLogDtoBuilder implements Builder<TableLogDto, TableLogDtoBuilder> {
+  _$TableLogDto? _$v;
 
   int? _state;
   int? get state => _$this._state;
@@ -177,9 +171,9 @@ class LqlTableLogDtoBuilder
   DateTime? get time => _$this._time;
   set time(DateTime? time) => _$this._time = time;
 
-  LqlTableLogDtoBuilder();
+  TableLogDtoBuilder();
 
-  LqlTableLogDtoBuilder get _$this {
+  TableLogDtoBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
       _state = $v.state;
@@ -193,32 +187,32 @@ class LqlTableLogDtoBuilder
   }
 
   @override
-  void replace(LqlTableLogDto other) {
+  void replace(TableLogDto other) {
     ArgumentError.checkNotNull(other, 'other');
-    _$v = other as _$LqlTableLogDto;
+    _$v = other as _$TableLogDto;
   }
 
   @override
-  void update(void Function(LqlTableLogDtoBuilder)? updates) {
+  void update(void Function(TableLogDtoBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  LqlTableLogDto build() => _build();
+  TableLogDto build() => _build();
 
-  _$LqlTableLogDto _build() {
+  _$TableLogDto _build() {
     final _$result = _$v ??
-        new _$LqlTableLogDto._(
+        new _$TableLogDto._(
           state: BuiltValueNullFieldError.checkNotNull(
-              state, r'LqlTableLogDto', 'state'),
+              state, r'TableLogDto', 'state'),
           hostName: BuiltValueNullFieldError.checkNotNull(
-              hostName, r'LqlTableLogDto', 'hostName'),
+              hostName, r'TableLogDto', 'hostName'),
           displayName: BuiltValueNullFieldError.checkNotNull(
-              displayName, r'LqlTableLogDto', 'displayName'),
+              displayName, r'TableLogDto', 'displayName'),
           pluginOutput: BuiltValueNullFieldError.checkNotNull(
-              pluginOutput, r'LqlTableLogDto', 'pluginOutput'),
+              pluginOutput, r'TableLogDto', 'pluginOutput'),
           time: BuiltValueNullFieldError.checkNotNull(
-              time, r'LqlTableLogDto', 'time'),
+              time, r'TableLogDto', 'time'),
         );
     replace(_$result);
     return _$result;
