@@ -7,14 +7,23 @@ import './client_settings.dart';
 import './error/check_mk_base_error.dart';
 import './models/models.dart';
 
-class MyHttpOverrides extends HttpOverrides {
+class NoCertHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
+      ..connectionTimeout = const Duration(seconds: 60)
       ..badCertificateCallback =
           ((X509Certificate cert, String host, int port) {
         return true;
       });
+  }
+}
+
+class TimeoutHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..connectionTimeout = const Duration(seconds: 60);
   }
 }
 
@@ -31,14 +40,17 @@ class Client {
     if (debug && kDebugMode) {
       dio.interceptors.add(LogInterceptor());
     }
-
-    if (!settings.validateSsl && !kIsWeb) {
-      HttpOverrides.global = MyHttpOverrides();
+    if (!kIsWeb) {
+      if (!settings.validateSsl) {
+        HttpOverrides.global = NoCertHttpOverrides();
+      } else {
+        HttpOverrides.global = TimeoutHttpOverrides();
+      }
     }
   }
 
   Future<void> testConnection() async {
-    await getApiTableHost();
+    await getViewEvents(fromSecs: 1);
   }
 
   Future<Response> requestApi(
