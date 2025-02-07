@@ -1,4 +1,4 @@
-export './src/error/check_mk_base_error.dart';
+export 'src/error/network_error.dart';
 export './src/models/models.dart';
 export './src/client_settings.dart';
 export './src/client.dart';

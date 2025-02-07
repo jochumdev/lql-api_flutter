@@ -1,22 +1,22 @@
 import 'package:dio/dio.dart';
 
-class CheckMkBaseError implements Exception {
-  CheckMkBaseError({
+class NetworkError implements Exception {
+  NetworkError({
     this.request,
     this.response,
     this.type = DioExceptionType.unknown,
     required this.error,
   });
 
-  static CheckMkBaseError of<T>(T error) {
+  static NetworkError of<T>(T error) {
     if (error is DioException) {
-      return CheckMkBaseError(
+      return NetworkError(
         response: error.response,
         type: error.type,
         error: error.error,
       );
     } else {
-      return CheckMkBaseError(error: error);
+      return NetworkError(error: error);
     }
   }
 
