@@ -94,7 +94,7 @@ class Client {
           print(e.message);
         }
       }
-      throw NetworkError.of<DioException>(e);
+      throw NetworkError.of(e);
     }
   }
 

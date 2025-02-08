@@ -3,7 +3,7 @@ sealed class Comment {
   final String? author;
   final String? comment;
   final String? hostName;
-  final String? entryTime;
+  final DateTime? entryTime;
   final num? entryType;
   final bool? persistent;
   final bool? isService;
@@ -26,7 +26,7 @@ sealed class Comment {
     String? author,
     String? comment,
     String? hostName,
-    String? entryTime,
+    DateTime? entryTime,
     num? entryType,
     bool? persistent,
     bool? isService,
@@ -39,7 +39,9 @@ sealed class Comment {
       author: json['author'] as String?,
       comment: json['comment'] as String?,
       hostName: json['host_name'] as String?,
-      entryTime: json['entry_time'] as String?,
+      entryTime: json['entry_time'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(((json['entry_time'] as int) * 1000).round())
+          : null,
       entryType: json['entry_type'] as num?,
       persistent: json['persistent'] as bool?,
       isService: json['is_service'] as bool?,
@@ -52,7 +54,7 @@ sealed class Comment {
     String? author,
     String? comment,
     String? hostName,
-    String? entryTime,
+    DateTime? entryTime,
     num? entryType,
     bool? persistent,
     bool? isService,
@@ -75,18 +77,18 @@ final class CommentImpl extends Comment {
 
   @override
   Comment copyWith({
-    required num id,
+    num? id,
     String? author,
     String? comment,
     String? hostName,
-    String? entryTime,
+    DateTime? entryTime,
     num? entryType,
     bool? persistent,
     bool? isService,
     String? serviceDescription,
   }) {
     return CommentImpl(
-      id: this.id,
+      id: id ?? this.id,
       author: author ?? this.author,
       comment: comment ?? this.comment,
       hostName: hostName ?? this.hostName,
