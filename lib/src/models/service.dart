@@ -1,4 +1,4 @@
-sealed class Service {
+final class Service {
   final int state;
   final int? acknowledged;
   final String? hostName;
@@ -8,7 +8,7 @@ sealed class Service {
   final List<num>? comments;
   final DateTime? lastStateChange;
 
-  const Service._({
+  const Service({
     required this.state,
     this.acknowledged,
     this.hostName,
@@ -19,19 +19,8 @@ sealed class Service {
     this.lastStateChange,
   });
 
-  factory Service({
-    required int state,
-    int? acknowledged,
-    String? hostName,
-    String? displayName,
-    String? description,
-    String? pluginOutput,
-    List<num>? comments,
-    DateTime? lastStateChange,
-  }) = ServiceImpl;
-
   factory Service.fromJson(Map<String, dynamic> json) {
-    return ServiceImpl(
+    return Service(
       state: json['state'] as int,
       acknowledged: json['acknowledged'] as int?,
       hostName: json['host_name'] as String?,
@@ -54,33 +43,8 @@ sealed class Service {
     String? pluginOutput,
     List<num>? comments,
     DateTime? lastStateChange,
-  });
-}
-
-final class ServiceImpl extends Service {
-  const ServiceImpl({
-    required super.state,
-    super.acknowledged,
-    super.hostName,
-    super.displayName,
-    super.description,
-    super.pluginOutput,
-    super.comments,
-    super.lastStateChange,
-  }) : super._();
-
-  @override
-  Service copyWith({
-    int? state,
-    int? acknowledged,
-    String? hostName,
-    String? displayName,
-    String? description,
-    String? pluginOutput,
-    List<num>? comments,
-    DateTime? lastStateChange,
   }) {
-    return ServiceImpl(
+    return Service(
       state: state ?? this.state,
       acknowledged: acknowledged ?? this.acknowledged,
       hostName: hostName ?? this.hostName,
@@ -95,7 +59,7 @@ final class ServiceImpl extends Service {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ServiceImpl &&
+      other is Service &&
           runtimeType == other.runtimeType &&
           state == other.state &&
           acknowledged == other.acknowledged &&

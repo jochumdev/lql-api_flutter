@@ -1,19 +1,14 @@
-sealed class StatsTacticalOverview {
+final class StatsTacticalOverview {
   final StatsTOEntry hosts;
   final StatsTOEntry services;
 
-  const StatsTacticalOverview._({
+  const StatsTacticalOverview({
     required this.hosts,
     required this.services,
   });
 
-  factory StatsTacticalOverview({
-    required StatsTOEntry hosts,
-    required StatsTOEntry services,
-  }) = StatsTacticalOverviewImpl;
-
   factory StatsTacticalOverview.fromJson(Map<String, dynamic> json) {
-    return StatsTacticalOverviewImpl(
+    return StatsTacticalOverview(
       hosts: StatsTOEntry.fromJson(json['hosts'] as Map<String, dynamic>),
       services: StatsTOEntry.fromJson(json['services'] as Map<String, dynamic>),
     );
@@ -22,21 +17,8 @@ sealed class StatsTacticalOverview {
   StatsTacticalOverview copyWith({
     StatsTOEntry? hosts,
     StatsTOEntry? services,
-  });
-}
-
-final class StatsTacticalOverviewImpl extends StatsTacticalOverview {
-  const StatsTacticalOverviewImpl({
-    required super.hosts,
-    required super.services,
-  }) : super._();
-
-  @override
-  StatsTacticalOverview copyWith({
-    StatsTOEntry? hosts,
-    StatsTOEntry? services,
   }) {
-    return StatsTacticalOverviewImpl(
+    return StatsTacticalOverview(
       hosts: hosts ?? this.hosts,
       services: services ?? this.services,
     );
@@ -45,8 +27,7 @@ final class StatsTacticalOverviewImpl extends StatsTacticalOverview {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is StatsTacticalOverviewImpl &&
-          runtimeType == other.runtimeType &&
+      other is StatsTacticalOverview &&
           hosts == other.hosts &&
           services == other.services;
 
@@ -59,28 +40,21 @@ final class StatsTacticalOverviewImpl extends StatsTacticalOverview {
   }
 }
 
-sealed class StatsTOEntry {
+final class StatsTOEntry {
   final int all;
   final int warn;
   final int crit;
   final int unkn;
 
-  const StatsTOEntry._({
+  const StatsTOEntry({
     required this.all,
     required this.warn,
     required this.crit,
     required this.unkn,
   });
 
-  factory StatsTOEntry({
-    required int all,
-    required int warn,
-    required int crit,
-    required int unkn,
-  }) = StatsTOEntryImpl;
-
   factory StatsTOEntry.fromJson(Map<String, dynamic> json) {
-    return StatsTOEntryImpl(
+    return StatsTOEntry(
       all: json['all'] as int,
       warn: json['warn'] as int,
       crit: json['crit'] as int,
@@ -93,25 +67,8 @@ sealed class StatsTOEntry {
     int? warn,
     int? crit,
     int? unkn,
-  });
-}
-
-final class StatsTOEntryImpl extends StatsTOEntry {
-  const StatsTOEntryImpl({
-    required super.all,
-    required super.warn,
-    required super.crit,
-    required super.unkn,
-  }) : super._();
-
-  @override
-  StatsTOEntry copyWith({
-    int? all,
-    int? warn,
-    int? crit,
-    int? unkn,
   }) {
-    return StatsTOEntryImpl(
+    return StatsTOEntry(
       all: all ?? this.all,
       warn: warn ?? this.warn,
       crit: crit ?? this.crit,
@@ -122,8 +79,7 @@ final class StatsTOEntryImpl extends StatsTOEntry {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is StatsTOEntryImpl &&
-          runtimeType == other.runtimeType &&
+      other is StatsTOEntry &&
           all == other.all &&
           warn == other.warn &&
           crit == other.crit &&

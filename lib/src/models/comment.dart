@@ -1,4 +1,4 @@
-sealed class Comment {
+final class Comment {
   final num id;
   final String? author;
   final String? comment;
@@ -9,7 +9,7 @@ sealed class Comment {
   final bool? isService;
   final String? serviceDescription;
 
-  const Comment._({
+  const Comment({
     required this.id,
     this.author,
     this.comment,
@@ -21,20 +21,8 @@ sealed class Comment {
     this.serviceDescription,
   });
 
-  factory Comment({
-    required num id,
-    String? author,
-    String? comment,
-    String? hostName,
-    DateTime? entryTime,
-    num? entryType,
-    bool? persistent,
-    bool? isService,
-    String? serviceDescription,
-  }) = CommentImpl;
-
   factory Comment.fromJson(Map<String, dynamic> json) {
-    return CommentImpl(
+    return Comment(
       id: json['id'] as num,
       author: json['author'] as String?,
       comment: json['comment'] as String?,
@@ -50,33 +38,6 @@ sealed class Comment {
   }
 
   Comment copyWith({
-    required num id,
-    String? author,
-    String? comment,
-    String? hostName,
-    DateTime? entryTime,
-    num? entryType,
-    bool? persistent,
-    bool? isService,
-    String? serviceDescription,
-  });
-}
-
-final class CommentImpl extends Comment {
-  const CommentImpl({
-    required super.id,
-    super.author,
-    super.comment,
-    super.hostName,
-    super.entryTime,
-    super.entryType,
-    super.persistent,
-    super.isService,
-    super.serviceDescription,
-  }) : super._();
-
-  @override
-  Comment copyWith({
     num? id,
     String? author,
     String? comment,
@@ -87,7 +48,7 @@ final class CommentImpl extends Comment {
     bool? isService,
     String? serviceDescription,
   }) {
-    return CommentImpl(
+    return Comment(
       id: id ?? this.id,
       author: author ?? this.author,
       comment: comment ?? this.comment,
@@ -103,7 +64,7 @@ final class CommentImpl extends Comment {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CommentImpl &&
+      other is Comment &&
           runtimeType == other.runtimeType &&
           id == other.id &&
           author == other.author &&

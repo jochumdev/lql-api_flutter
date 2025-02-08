@@ -142,7 +142,7 @@ class Client {
     response.data["value"].forEach((item) {
       result.add(Host.fromJson(item['extensions']));
     });
-    return result;
+    return List.from(result, growable: false);
   }
 
   Future<List<Service>> getApiServices(
@@ -165,7 +165,7 @@ class Client {
     response.data["value"].forEach((item) {
       result.add(Service.fromJson(item['extensions']));
     });
-    return result;
+    return List.from(result, growable: false);
   }
 
   Future<List<Comment>> getApiComments(
@@ -177,7 +177,7 @@ class Client {
     response.data["value"].forEach((item) {
       result.add(Comment.fromJson(item['extensions']));
     });
-    return result;
+    return List.from(result, growable: false);
   }
 
   Future<StatsTacticalOverview> getApiStatsTacticalOverview() async {
@@ -359,7 +359,7 @@ class Client {
       );
     }
 
-    return result;
+    return List.from(result, growable: false);
   }
 
   @override

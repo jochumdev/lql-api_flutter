@@ -1,11 +1,11 @@
-sealed class Log {
+final class Log {
   final int state;
   final String hostName;
   final String displayName;
   final String pluginOutput;
   final DateTime time;
 
-  const Log._({
+  const Log({
     required this.state,
     required this.hostName,
     required this.displayName,
@@ -13,21 +13,13 @@ sealed class Log {
     required this.time,
   });
 
-  factory Log({
-    required int state,
-    required String hostName,
-    required String displayName,
-    required String pluginOutput,
-    required DateTime time,
-  }) = LogImpl;
-
   factory Log.fromJson(Map<String, dynamic> json) {
-    return LogImpl(
+    return Log(
       state: json['state'] as int,
-      hostName: json['current_host_name'] as String,
-      displayName: json['current_service_display_name'] as String,
+      hostName: json['host_name'] as String,
+      displayName: json['display_name'] as String,
       pluginOutput: json['plugin_output'] as String,
-      time: DateTime.parse(json['time'] as String),
+      time: DateTime.fromMillisecondsSinceEpoch(((json['time'] as int) * 1000).round()),
     );
   }
 
@@ -37,27 +29,8 @@ sealed class Log {
     String? displayName,
     String? pluginOutput,
     DateTime? time,
-  });
-}
-
-final class LogImpl extends Log {
-  const LogImpl({
-    required super.state,
-    required super.hostName,
-    required super.displayName,
-    required super.pluginOutput,
-    required super.time,
-  }) : super._();
-
-  @override
-  Log copyWith({
-    int? state,
-    String? hostName,
-    String? displayName,
-    String? pluginOutput,
-    DateTime? time,
   }) {
-    return LogImpl(
+    return Log(
       state: state ?? this.state,
       hostName: hostName ?? this.hostName,
       displayName: displayName ?? this.displayName,
@@ -69,7 +42,7 @@ final class LogImpl extends Log {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is LogImpl &&
+      other is Log &&
           runtimeType == other.runtimeType &&
           state == other.state &&
           hostName == other.hostName &&
