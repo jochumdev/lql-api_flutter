@@ -5,7 +5,7 @@ final class Service {
   final String? displayName;
   final String? description;
   final String? pluginOutput;
-  final List<num>? comments;
+  final List<int>? comments;
   final DateTime? lastStateChange;
 
   const Service({
@@ -27,7 +27,7 @@ final class Service {
       displayName: json['display_name'] as String?,
       description: json['description'] as String?,
       pluginOutput: json['plugin_output'] as String?,
-      comments: (json['comments'] as List<dynamic>?)?.cast<num>(),
+      comments: (json['comments'] as List<dynamic>?)?.cast<int>(),
       lastStateChange: json['last_state_change'] != null
           ? DateTime.fromMillisecondsSinceEpoch(((json['last_state_change'] as int) * 1000).round())
           : null,
@@ -41,7 +41,7 @@ final class Service {
     String? displayName,
     String? description,
     String? pluginOutput,
-    List<num>? comments,
+    List<int>? comments,
     DateTime? lastStateChange,
   }) {
     return Service(

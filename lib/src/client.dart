@@ -48,8 +48,9 @@ class Client {
     }
   }
 
-  Future<void> testConnection() async {
+  Future<bool> testConnection() async {
     await getViewEvents(fromSecs: 1);
+    return true;
   }
 
   Future<Response> requestApi(

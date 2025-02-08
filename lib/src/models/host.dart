@@ -21,7 +21,7 @@ final class Host {
     return Host(
       state: json['state'] as int,
       acknowledged: json['acknowledged'] as int?,
-      hostName: json['host_name'] as String?,
+      hostName: json['name'] as String?,
       displayName: json['display_name'] as String?,
       pluginOutput: json['plugin_output'] as String?,
       comments: (json['comments'] as List<dynamic>?)?.cast<num>(),

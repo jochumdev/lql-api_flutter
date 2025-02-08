@@ -1,10 +1,10 @@
 final class Comment {
-  final num id;
+  final int id;
   final String? author;
   final String? comment;
   final String? hostName;
-  final DateTime? entryTime;
-  final num? entryType;
+  final String? entryTime;
+  final int? entryType;
   final bool? persistent;
   final bool? isService;
   final String? serviceDescription;
@@ -23,14 +23,12 @@ final class Comment {
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
-      id: json['id'] as num,
+      id: json['id'] as int,
       author: json['author'] as String?,
       comment: json['comment'] as String?,
       hostName: json['host_name'] as String?,
-      entryTime: json['entry_time'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(((json['entry_time'] as int) * 1000).round())
-          : null,
-      entryType: json['entry_type'] as num?,
+      entryTime: json['entry_time'] as String?,
+      entryType: json['entry_type'] as int?,
       persistent: json['persistent'] as bool?,
       isService: json['is_service'] as bool?,
       serviceDescription: json['service_description'] as String?,
@@ -38,12 +36,12 @@ final class Comment {
   }
 
   Comment copyWith({
-    num? id,
+    int? id,
     String? author,
     String? comment,
     String? hostName,
-    DateTime? entryTime,
-    num? entryType,
+    String? entryTime,
+    int? entryType,
     bool? persistent,
     bool? isService,
     String? serviceDescription,
