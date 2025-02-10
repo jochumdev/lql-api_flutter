@@ -1,4 +1,4 @@
-name: check_mk_api
+name: checkmk_api
 description: A new Flutter package project.
 version: 0.0.1
 
@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   dio: ^5.8.0+1
-  retry: ^3.0.0+1
+  retry: ^3.1.2
 
 dev_dependencies:
   test: ^1.15.3

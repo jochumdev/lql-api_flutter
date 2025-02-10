@@ -1,10 +1,46 @@
-import 'package:check_mk_api/src/consts.dart';
-import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
+import 'dart:async';
 import 'dart:io' if (kIsWeb) 'dart:html';
+
+
+import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
+
 import 'package:dio/dio.dart';
-import './client_settings.dart';
-import 'error/network_error.dart';
+import 'package:retry/retry.dart';
+
+import 'consts.dart';
+import 'exceptions.dart';
 import './models/models.dart';
+
+class ClientSettings {
+  final String baseUrl;
+  final String site;
+  final bool insecure;
+
+  final String username;
+  final String secret;
+
+  ClientSettings(
+      {required this.baseUrl,
+      required this.site,
+      required this.username,
+      required this.secret,
+      this.insecure = false});
+}
+
+/// Represents the current state of the connection to the Check_MK server
+enum ConnectionState {
+  /// Initial state when the client is created
+  initial,
+
+  /// Successfully connected to the server
+  connected,
+
+  /// Connection attempt failed
+  error,
+
+  /// Currently attempting to connect
+  connecting
+}
 
 class NoCertHttpOverrides extends HttpOverrides {
   @override
@@ -32,6 +68,21 @@ class Client {
 
   Dio dio = Dio();
 
+  // Connection state handling
+  final _connectionStateController =
+      StreamController<ConnectionState>.broadcast();
+  ConnectionState _currentState = ConnectionState.initial;
+
+  /// Stream of connection state changes
+  Stream<ConnectionState> get connectionState =>
+      _connectionStateController.stream;
+
+  /// Current connection state
+  ConnectionState get currentState => _currentState;
+
+  BaseException? _lastError;
+  Timer? _reconnectTimer;
+
   Client(this.settings, {this.debug = false}) {
     dio.options.baseUrl = settings.baseUrl;
     dio.options.contentType = Headers.formUrlEncodedContentType;
@@ -40,7 +91,7 @@ class Client {
       dio.interceptors.add(LogInterceptor());
     }
     if (!kIsWeb) {
-      if (!settings.validateSsl) {
+      if (settings.insecure) {
         HttpOverrides.global = NoCertHttpOverrides();
       } else {
         HttpOverrides.global = TimeoutHttpOverrides();
@@ -48,39 +99,33 @@ class Client {
     }
   }
 
-  Future<bool> testConnection() async {
-    await getViewEvents(fromSecs: 1);
-    return true;
+  void _updateConnectionState(ConnectionState newState) {
+      _currentState = newState;
+      _connectionStateController.add(newState);
   }
 
-  Future<Response> requestApi(
-      {String method = 'GET',
-      String url = '',
-      Map<String, dynamic> query = const {},
-      dynamic data}) async {
-    Uri uri = Uri(
-        path: "/${settings.site}/check_mk/api/1.0$url",
-        queryParameters: query);
-
-    var auth = 'Bearer ${settings.username} ${settings.secret}';
-
-    Map<String, dynamic> requestData = {};
-    if (data != null) {
-      requestData["request"] = data;
+  void _checkConnection() {
+    if (_currentState != ConnectionState.connecting &&
+        _currentState != ConnectionState.connected) {
+      throw _lastError ?? NotConnectedException();
     }
+  }
 
+  BaseException error() {
+    return _lastError ?? NotConnectedException();
+  }
+
+  /// Dispose of the client and clean up resources
+  void dispose() {
+    _connectionStateController.close();
+  }
+
+  Future<void> testConnection({bool setError = true}) async {
     try {
-      print('Requesting: ${dio.options.baseUrl}${uri.toString()}');
-      return await dio.request(uri.toString(),
-          options: Options(
-            method: method,
-            headers: <String, String>{
-              'authorization': auth,
-              'content-type': 'application/json',
-              'accept': 'application/json',
-            },
-          ),
-          data: data);
+      if (kDebugMode) {
+        print('Requesting: ${dio.options.baseUrl}/${settings.site}/check_mk/login.py');
+      }
+      await dio.request("/${settings.site}/check_mk/login.py");
     } on DioException catch (e) {
       if (kDebugMode) {
         // The request was made and the server responded with a status code
@@ -95,8 +140,115 @@ class Client {
           print(e.message);
         }
       }
-      throw NetworkError.of(e);
+      if (setError) {
+        _lastError = NetworkException.of<DioException>(e);
+      }
+      throw NetworkException.of<DioException>(e);
     }
+  }
+
+  Future<void> connect({bool setError = true}) async {
+    try {
+      _updateConnectionState(ConnectionState.connecting);
+      await testConnection(setError: setError);
+      _updateConnectionState(ConnectionState.connected);
+    } catch (e) {
+      _updateConnectionState(ConnectionState.error);
+      rethrow;
+    }
+  }
+
+  void disconnect({BaseException? reason}) {
+    _updateConnectionState(ConnectionState.initial);
+    if (reason != null) {
+      _lastError = reason;
+    } else {
+      _lastError ??= NotConnectedException();
+    }
+  }
+
+  Future<void> reconnect() async {
+    disconnect();
+
+    try {
+      connect(setError: false);
+      return;
+    } on Exception catch (_) {
+      // Ignore
+    }
+
+    _reconnectTimer?.cancel();
+    _reconnectTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
+      try {
+        await retry(
+          () => connect(setError: false),
+          retryIf: (e) => e is NetworkException,
+          maxAttempts: 3,
+          delayFactor: const Duration(seconds: 1),
+        );
+        _reconnectTimer?.cancel();
+      } catch (e) {
+        if (kDebugMode) {
+          print('Reconnection attempt failed: ${e.toString()}');
+        }
+      }
+    });
+  }
+
+  Future<Response> requestApi(
+      {String method = 'GET',
+      String url = '',
+      Map<String, dynamic> query = const {},
+      dynamic data}) async {
+    Uri uri = Uri(
+        path: "/${settings.site}/check_mk/api/1.0$url", queryParameters: query);
+
+    _checkConnection();
+
+    var auth = 'Bearer ${settings.username} ${settings.secret}';
+
+    Map<String, dynamic> requestData = {};
+    if (data != null) {
+      requestData["request"] = data;
+    }
+
+    try {
+      if (kDebugMode) {
+        print('Requesting: ${dio.options.baseUrl}${uri.toString()}');
+      }
+      final response = await dio.request(uri.toString(),
+          options: Options(
+            method: method,
+            headers: <String, String>{
+              'authorization': auth,
+              'content-type': 'application/json',
+              'accept': 'application/json',
+            },
+          ),
+          data: data);
+      return response;
+    } on DioException catch (e) {
+      if (kDebugMode) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx and is also not 304.
+        if (e.response != null) {
+          print(e.requestOptions.uri);
+          print(e.response!.data);
+          print(e.response!.headers);
+        } else {
+          // Something happened in setting up or sending the request that triggered an Error
+          print(e.requestOptions.uri);
+          print(e.message);
+        }
+      }
+      _lastError = NetworkException.of<DioException>(e);
+      await reconnect();
+      throw _lastError!;
+    } on Exception catch (e) {
+      _lastError = BaseException(message: e.toString());
+      rethrow;
+    }
+
   }
 
   Future<Response> requestApiCollection(String table,
@@ -232,6 +384,8 @@ class Client {
 
   Future<Response> requestView(String view,
       {Map<String, dynamic> query = const {}}) async {
+    _checkConnection();
+
     query['view_name'] = view;
     query['output_format'] = 'json';
 
@@ -239,7 +393,7 @@ class Client {
         Uri(path: "/${settings.site}/check_mk/view.py", queryParameters: query);
 
     try {
-      return await dio.request(
+      final response = await dio.request(
         uri.toString(),
         options: Options(
           method: 'GET',
@@ -250,6 +404,7 @@ class Client {
           },
         ),
       );
+      return response;
     } on DioException catch (e) {
       if (kDebugMode) {
         // The request was made and the server responded with a status code
@@ -264,7 +419,13 @@ class Client {
           print(e.message);
         }
       }
-      throw NetworkError.of<DioException>(e);
+      _lastError = NetworkException.of<DioException>(e);
+      await reconnect();
+
+      throw _lastError!;
+    } on Exception catch (e) {
+      _lastError = BaseException(message: e.toString());
+      rethrow;
     }
   }
 
@@ -365,6 +526,6 @@ class Client {
 
   @override
   String toString() {
-    return 'cmk_api.Client: ${settings.baseUrl}';
+    return 'checkmk_api.Client: ${settings.baseUrl}';
   }
 }
