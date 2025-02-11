@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 
 class BaseException implements Exception {
   String message = 'Unknown error';
@@ -16,32 +17,32 @@ class BaseException implements Exception {
 }
 
 class NotConnectedException extends BaseException {
-  NotConnectedException() : super(message: 'Not connected to the Checkmk server, not on Wifi?');
+  NotConnectedException() : super(message: 'Not connected to the Checkmk server');
 }
 
 class NetworkException extends BaseException {
-  RequestOptions? request;
-  Response? response;
-  Exception? error;
-
-  @override
-  String get message => (error?.toString() ?? '');
-
   NetworkException({
-    this.request,
-    this.response,
-    required this.error,
+    required super.message,
   });
 
-  static NetworkException of<T extends Exception>(T error) {
-    if (error is DioException) {
-      return NetworkException(
-        response: error.response,
-        error: error,
-      );
-    } else {
-      return NetworkException(error: error);
+  static NetworkException of<T extends Exception>(T e) {
+    if (e is DioException) {
+      if (kDebugMode) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx and is also not 304.
+        if (e.response != null) {
+          print(e.requestOptions.uri);
+          print(e.response!.data);
+          print(e.response!.headers);
+          print(e.response!.statusCode);
+        } else {
+          // Something happened in setting up or sending the request that triggered an Error
+          print(e.requestOptions.uri);
+          print(e.message);
+        }
+      }
     }
+    return NetworkException(message: e.toString());
   }
 
   @override

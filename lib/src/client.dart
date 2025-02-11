@@ -29,17 +29,17 @@ class ClientSettings {
 
 /// Represents the current state of the connection to the Check_MK server
 enum ConnectionState {
-  /// Initial state when the client is created
-  initial,
+  /// Disconnected from the server, this is also the initial state.
+  disconnected,
+
+  /// Currently attempting to connect
+  connecting,
 
   /// Successfully connected to the server
   connected,
 
-  /// Connection attempt failed
+  /// Connection failed or error happened
   error,
-
-  /// Currently attempting to connect
-  connecting
 }
 
 class NoCertHttpOverrides extends HttpOverrides {
@@ -71,10 +71,10 @@ class Client {
   // Connection state handling
   final _connectionStateController =
       StreamController<ConnectionState>.broadcast();
-  ConnectionState _currentState = ConnectionState.initial;
+  ConnectionState _currentState = ConnectionState.disconnected;
 
   /// Stream of connection state changes
-  Stream<ConnectionState> get connectionState =>
+  Stream<ConnectionState> get connectionStateStream =>
       _connectionStateController.stream;
 
   /// Current connection state
@@ -111,12 +111,32 @@ class Client {
     }
   }
 
+  void _startReconnectTimer() {
+    _reconnectTimer?.cancel();
+    _reconnectTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
+      try {
+        await retry(
+          () => testConnection(setError: false),
+          retryIf: (e) => e is NetworkException,
+          maxAttempts: 3,
+        );
+        _reconnectTimer?.cancel();
+        _updateConnectionState(ConnectionState.connected);
+      } catch (e) {
+        if (kDebugMode) {
+          print('Reconnection attempt failed: ${e.toString()}');
+        }
+      }
+    });    
+  }
+
   BaseException error() {
     return _lastError ?? NotConnectedException();
   }
 
   /// Dispose of the client and clean up resources
   void dispose() {
+    _reconnectTimer?.cancel();
     _connectionStateController.close();
   }
 
@@ -127,39 +147,35 @@ class Client {
       }
       await dio.request("/${settings.site}/check_mk/login.py");
     } on DioException catch (e) {
-      if (kDebugMode) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx and is also not 304.
-        if (e.response != null) {
-          print(e.requestOptions.uri);
-          print(e.response!.data);
-          print(e.response!.headers);
-        } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          print(e.requestOptions.uri);
-          print(e.message);
-        }
-      }
       if (setError) {
-        _lastError = NetworkException.of<DioException>(e);
+        _lastError = NetworkException.of(e);
+        throw _lastError!;
+      } else {
+        throw NetworkException.of(e);
       }
-      throw NetworkException.of<DioException>(e);
+    } on Exception catch (e) {
+      if (setError) {
+        _lastError = NetworkException.of(e);
+        throw _lastError!;
+      } else {
+        throw NetworkException.of(e);
+      }
     }
   }
 
-  Future<void> connect({bool setError = true}) async {
+  Future<void> connect() async {
     try {
       _updateConnectionState(ConnectionState.connecting);
-      await testConnection(setError: setError);
+      await testConnection();
       _updateConnectionState(ConnectionState.connected);
-    } catch (e) {
-      _updateConnectionState(ConnectionState.error);
+    } catch (_) {
+      _startReconnectTimer();
       rethrow;
     }
   }
 
   void disconnect({BaseException? reason}) {
-    _updateConnectionState(ConnectionState.initial);
+    _updateConnectionState(ConnectionState.disconnected);
     if (reason != null) {
       _lastError = reason;
     } else {
@@ -171,28 +187,11 @@ class Client {
     disconnect();
 
     try {
-      connect(setError: false);
+      connect();
       return;
-    } on Exception catch (_) {
+    } catch (_) {
       // Ignore
     }
-
-    _reconnectTimer?.cancel();
-    _reconnectTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
-      try {
-        await retry(
-          () => connect(setError: false),
-          retryIf: (e) => e is NetworkException,
-          maxAttempts: 3,
-          delayFactor: const Duration(seconds: 1),
-        );
-        _reconnectTimer?.cancel();
-      } catch (e) {
-        if (kDebugMode) {
-          print('Reconnection attempt failed: ${e.toString()}');
-        }
-      }
-    });
   }
 
   Future<Response> requestApi(
@@ -228,27 +227,16 @@ class Client {
           data: data);
       return response;
     } on DioException catch (e) {
-      if (kDebugMode) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx and is also not 304.
-        if (e.response != null) {
-          print(e.requestOptions.uri);
-          print(e.response!.data);
-          print(e.response!.headers);
-        } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          print(e.requestOptions.uri);
-          print(e.message);
-        }
-      }
-      _lastError = NetworkException.of<DioException>(e);
-      await reconnect();
+      _updateConnectionState(ConnectionState.error);
+
+      _lastError = NetworkException.of(e);
       throw _lastError!;
     } on Exception catch (e) {
-      _lastError = BaseException(message: e.toString());
-      rethrow;
-    }
+      _updateConnectionState(ConnectionState.error);
 
+      _lastError = NetworkException.of(e);
+      throw _lastError!;
+    }
   }
 
   Future<Response> requestApiCollection(String table,
@@ -406,26 +394,15 @@ class Client {
       );
       return response;
     } on DioException catch (e) {
-      if (kDebugMode) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx and is also not 304.
-        if (e.response != null) {
-          print(e.requestOptions.uri);
-          print(e.response!.data);
-          print(e.response!.headers);
-        } else {
-          // Something happened in setting up or sending the request that triggered an Error
-          print(e.requestOptions.uri);
-          print(e.message);
-        }
-      }
-      _lastError = NetworkException.of<DioException>(e);
-      await reconnect();
+      _updateConnectionState(ConnectionState.error);
 
+      _lastError = NetworkException.of(e);
       throw _lastError!;
     } on Exception catch (e) {
-      _lastError = BaseException(message: e.toString());
-      rethrow;
+      _updateConnectionState(ConnectionState.error);
+
+      _lastError = NetworkException.of(e);
+      throw _lastError!;
     }
   }
 
