@@ -26,7 +26,8 @@ final class Host {
       pluginOutput: json['plugin_output'] as String?,
       comments: (json['comments'] as List<dynamic>?)?.cast<num>(),
       lastStateChange: json['last_state_change'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(((json['last_state_change'] as int) * 1000).round())
+          ? DateTime.fromMillisecondsSinceEpoch(
+              ((json['last_state_change'] as int) * 1000).round())
           : null,
     );
   }

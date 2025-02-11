@@ -1,6 +1,3 @@
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
-
 class BaseException implements Exception {
   String message = 'Unknown error';
 
@@ -17,7 +14,8 @@ class BaseException implements Exception {
 }
 
 class NotConnectedException extends BaseException {
-  NotConnectedException() : super(message: 'Not connected to the Checkmk server');
+  NotConnectedException()
+      : super(message: 'Not connected to the Checkmk server');
 }
 
 class NetworkException extends BaseException {

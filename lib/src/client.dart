@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:io' if (kIsWeb) 'dart:html';
 
+import 'package:rxdart/rxdart.dart';
+
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:dio/dio.dart';
-import 'package:retry/retry.dart';
 
 import 'consts.dart';
 import 'exceptions.dart';
@@ -51,17 +52,8 @@ class NoCertHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..connectionTimeout = const Duration(seconds: 2)
       ..badCertificateCallback =
           ((X509Certificate cert, String host, int port) => true);
-  }
-}
-
-class TimeoutHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..connectionTimeout = const Duration(seconds: 2);
   }
 }
 
@@ -73,8 +65,7 @@ class Client {
   late Dio dio;
 
   // Connection state handling
-  final _connectionStateController =
-      StreamController<ConnectionState>.broadcast();
+  late final BehaviorSubject<ConnectionState> _connectionStateController;
   ConnectionState _currentState = ConnectionState.initial;
 
   /// Stream of connection state changes
@@ -84,28 +75,27 @@ class Client {
   /// Current connection state
   ConnectionState get connectionState => _currentState;
 
-  late ConnectionState _requestedState;
+  ConnectionState _requestedState = ConnectionState.connected;
   ConnectionState get requestedConnectionState => _requestedState;
 
   BaseException? _lastError;
   Timer? _keepAliveTimer;
 
   Client(this.dioFactory, this.settings,
-      {this.keepAliveInterval = const Duration(seconds: 10),
-      ConnectionState requestedState = ConnectionState.connected}) {
-    _requestedState = requestedState;
+      {this.keepAliveInterval = const Duration(seconds: 60),
+      bool requireConnect = true}) {
+    _connectionStateController =
+        BehaviorSubject<ConnectionState>.seeded(_currentState);
+
+    if (!requireConnect) _currentState = ConnectionState.connected;
 
     dio = dioFactory();
 
     dio.options.baseUrl = settings.baseUrl;
     dio.options.contentType = Headers.formUrlEncodedContentType;
 
-    if (!kIsWeb) {
-      if (settings.insecure) {
-        HttpOverrides.global = NoCertHttpOverrides();
-      } else {
-        HttpOverrides.global = TimeoutHttpOverrides();
-      }
+    if (!kIsWeb && settings.insecure) {
+      HttpOverrides.global = NoCertHttpOverrides();
     }
   }
 
@@ -117,8 +107,7 @@ class Client {
   }
 
   void _checkConnection() {
-    if (_currentState != ConnectionState.connecting &&
-        _currentState != ConnectionState.connected) {
+    if (_currentState != ConnectionState.connected) {
       throw _lastError ?? NotConnectedException();
     }
   }
@@ -129,11 +118,7 @@ class Client {
       if (_requestedState != ConnectionState.connected) return;
 
       try {
-        await retry(
-          () => testConnection(setError: false),
-          retryIf: (e) => e is NetworkException,
-          maxAttempts: 3,
-        );
+        testConnection(setError: false);
         _updateConnectionState(ConnectionState.connected);
       } catch (_) {
         _updateConnectionState(ConnectionState.error);
@@ -178,7 +163,7 @@ class Client {
       await testConnection();
       _updateConnectionState(ConnectionState.connected);
     } catch (_) {
-      rethrow;
+      // Ignore.
     } finally {
       _keepAlive();
     }

@@ -19,7 +19,8 @@ final class Log {
       hostName: json['host_name'] as String,
       displayName: json['display_name'] as String,
       pluginOutput: json['plugin_output'] as String,
-      time: DateTime.fromMillisecondsSinceEpoch(((json['time'] as int) * 1000).round()),
+      time: DateTime.fromMillisecondsSinceEpoch(
+          ((json['time'] as int) * 1000).round()),
     );
   }
 

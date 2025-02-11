@@ -86,7 +86,8 @@ final class StatsTOEntry {
           unkn == other.unkn;
 
   @override
-  int get hashCode => all.hashCode ^ warn.hashCode ^ crit.hashCode ^ unkn.hashCode;
+  int get hashCode =>
+      all.hashCode ^ warn.hashCode ^ crit.hashCode ^ unkn.hashCode;
 
   @override
   String toString() {
