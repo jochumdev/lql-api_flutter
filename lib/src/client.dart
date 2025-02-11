@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'dart:io' if (kIsWeb) 'dart:html';
 
-
-import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:dio/dio.dart';
 import 'package:retry/retry.dart';
@@ -29,6 +28,9 @@ class ClientSettings {
 
 /// Represents the current state of the connection to the Check_MK server
 enum ConnectionState {
+  /// Initial state, nothing happened/happens
+  initial,
+
   /// Disconnected from the server, this is also the initial state.
   disconnected,
 
@@ -40,17 +42,18 @@ enum ConnectionState {
 
   /// Connection failed or error happened
   error,
+
+  /// Connection is paused, e.g. by a user action
+  paused,
 }
 
 class NoCertHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..connectionTimeout = const Duration(seconds: 60)
+      ..connectionTimeout = const Duration(seconds: 2)
       ..badCertificateCallback =
-          ((X509Certificate cert, String host, int port) {
-        return true;
-      });
+          ((X509Certificate cert, String host, int port) => true);
   }
 }
 
@@ -58,38 +61,45 @@ class TimeoutHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..connectionTimeout = const Duration(seconds: 60);
+      ..connectionTimeout = const Duration(seconds: 2);
   }
 }
 
 class Client {
+  final Dio Function() dioFactory;
   final ClientSettings settings;
-  final bool debug;
+  final Duration keepAliveInterval;
 
-  Dio dio = Dio();
+  late Dio dio;
 
   // Connection state handling
   final _connectionStateController =
       StreamController<ConnectionState>.broadcast();
-  ConnectionState _currentState = ConnectionState.disconnected;
+  ConnectionState _currentState = ConnectionState.initial;
 
   /// Stream of connection state changes
   Stream<ConnectionState> get connectionStateStream =>
       _connectionStateController.stream;
 
   /// Current connection state
-  ConnectionState get currentState => _currentState;
+  ConnectionState get connectionState => _currentState;
+
+  late ConnectionState _requestedState;
+  ConnectionState get requestedConnectionState => _requestedState;
 
   BaseException? _lastError;
-  Timer? _reconnectTimer;
+  Timer? _keepAliveTimer;
 
-  Client(this.settings, {this.debug = false}) {
+  Client(this.dioFactory, this.settings,
+      {this.keepAliveInterval = const Duration(seconds: 10),
+      ConnectionState requestedState = ConnectionState.connected}) {
+    _requestedState = requestedState;
+
+    dio = dioFactory();
+
     dio.options.baseUrl = settings.baseUrl;
     dio.options.contentType = Headers.formUrlEncodedContentType;
 
-    if (debug && kDebugMode) {
-      dio.interceptors.add(LogInterceptor());
-    }
     if (!kIsWeb) {
       if (settings.insecure) {
         HttpOverrides.global = NoCertHttpOverrides();
@@ -100,8 +110,10 @@ class Client {
   }
 
   void _updateConnectionState(ConnectionState newState) {
+    if (_currentState != newState) {
       _currentState = newState;
       _connectionStateController.add(newState);
+    }
   }
 
   void _checkConnection() {
@@ -111,23 +123,22 @@ class Client {
     }
   }
 
-  void _startReconnectTimer() {
-    _reconnectTimer?.cancel();
-    _reconnectTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
+  void _keepAlive() {
+    _keepAliveTimer?.cancel();
+    _keepAliveTimer = Timer.periodic(keepAliveInterval, (timer) async {
+      if (_requestedState != ConnectionState.connected) return;
+
       try {
         await retry(
           () => testConnection(setError: false),
           retryIf: (e) => e is NetworkException,
           maxAttempts: 3,
         );
-        _reconnectTimer?.cancel();
         _updateConnectionState(ConnectionState.connected);
-      } catch (e) {
-        if (kDebugMode) {
-          print('Reconnection attempt failed: ${e.toString()}');
-        }
+      } catch (_) {
+        _updateConnectionState(ConnectionState.error);
       }
-    });    
+    });
   }
 
   BaseException error() {
@@ -136,15 +147,12 @@ class Client {
 
   /// Dispose of the client and clean up resources
   void dispose() {
-    _reconnectTimer?.cancel();
+    _keepAliveTimer?.cancel();
     _connectionStateController.close();
   }
 
   Future<void> testConnection({bool setError = true}) async {
     try {
-      if (kDebugMode) {
-        print('Requesting: ${dio.options.baseUrl}/${settings.site}/check_mk/login.py');
-      }
       await dio.request("/${settings.site}/check_mk/login.py");
     } on DioException catch (e) {
       if (setError) {
@@ -164,18 +172,23 @@ class Client {
   }
 
   Future<void> connect() async {
+    _requestedState = ConnectionState.connected;
     try {
       _updateConnectionState(ConnectionState.connecting);
       await testConnection();
       _updateConnectionState(ConnectionState.connected);
     } catch (_) {
-      _startReconnectTimer();
       rethrow;
+    } finally {
+      _keepAlive();
     }
   }
 
   void disconnect({BaseException? reason}) {
+    _requestedState = ConnectionState.disconnected;
+    _keepAliveTimer?.cancel();
     _updateConnectionState(ConnectionState.disconnected);
+
     if (reason != null) {
       _lastError = reason;
     } else {
@@ -183,15 +196,13 @@ class Client {
     }
   }
 
-  Future<void> reconnect() async {
-    disconnect();
+  void pause({String reason = 'Paused'}) {
+    _keepAliveTimer?.cancel();
 
-    try {
-      connect();
-      return;
-    } catch (_) {
-      // Ignore
-    }
+    _lastError = BaseException(message: reason);
+
+    _requestedState = ConnectionState.paused;
+    _updateConnectionState(ConnectionState.paused);
   }
 
   Future<Response> requestApi(
@@ -212,9 +223,6 @@ class Client {
     }
 
     try {
-      if (kDebugMode) {
-        print('Requesting: ${dio.options.baseUrl}${uri.toString()}');
-      }
       final response = await dio.request(uri.toString(),
           options: Options(
             method: method,
@@ -227,13 +235,9 @@ class Client {
           data: data);
       return response;
     } on DioException catch (e) {
-      _updateConnectionState(ConnectionState.error);
-
       _lastError = NetworkException.of(e);
       throw _lastError!;
     } on Exception catch (e) {
-      _updateConnectionState(ConnectionState.error);
-
       _lastError = NetworkException.of(e);
       throw _lastError!;
     }
@@ -394,13 +398,9 @@ class Client {
       );
       return response;
     } on DioException catch (e) {
-      _updateConnectionState(ConnectionState.error);
-
       _lastError = NetworkException.of(e);
       throw _lastError!;
     } on Exception catch (e) {
-      _updateConnectionState(ConnectionState.error);
-
       _lastError = NetworkException.of(e);
       throw _lastError!;
     }
